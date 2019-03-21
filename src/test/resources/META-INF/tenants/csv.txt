@@ -1,0 +1,3 @@
+name=CSV Test
+repository=[(${config.serviceURI})]{/resource}
+logo=https://cdn.staticaly.com/favicons/www.theoi.com

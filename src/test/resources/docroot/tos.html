@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="layout :: head(${#strings.prepend(client.clientName, 'Term of Service - ')})"/>
+
+<body>
+  <nav th:replace="layout :: navbar('Term of Service')"></nav>
+
+  <div class="container profile">
+    <div class="card">
+      <div class="card-header">
+        Term of Service
+      </div>
+      <div class="card-body">
+        <h5 class="card-title">
+          <img th:attr="src=${client.logoUri}" class="rounded img-cp border shadow-sm" />&nbsp;&nbsp;
+          <span th:utext="${client.clientName}"></span>
+          <span th:utext="${client.softwareVersion}"></span>
+        </h5>
+        <div class="card-text">
+          <div id="lorem">
+            <div rv-html="lorem.text_out"></div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script type="text/javascript">
+    $(function () {
+      $.ajax({
+        url: 'https://www.randomtext.me/api/gibberish/p-5/40-60',
+        success: function (result) {
+          $("#lorem").html(result.text_out)
+        }
+      });
+    });
+  </script>
+</body>
+
+</html>

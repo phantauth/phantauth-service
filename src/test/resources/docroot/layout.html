@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head (title)" th:assert="${!#strings.isEmpty(title)}">
+  <base th:attr="href=${template}" />
+  <title th:utext="${title}"></title>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div th:fragment="navbar (title)">
+    <div id="sandbox" class="sandbox bg-warning text-center" role="alert" aria-live="assertive" aria-atomic="true" style="display: none;">
+      <div class="small">You are viewing the PhantAuth <b>Sandbox</b>!</div>
+    </div>
+    <script type="text/javascript">
+      $(function() {
+         if ( ! window.location.hostname.endsWith('.me')) {
+           $("#sandbox").show()
+         }
+      });
+    </script>
+    <nav class="navbar navbar-dark bg-primary sticky-top">
+      <a class="navbar-brand" th:attr="href=${tenant.issuer}"><span th:replace="settings :: name"/></a>
+      <span class="navbar-text" th:utext="${title}" th:if="${title}"></span>
+    </nav>
+  </div>
+
+</body>
+
+</html>

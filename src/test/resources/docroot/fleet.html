@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="layout :: head(${fleet.name})"/>
+
+<body>
+  <nav th:replace="${widget == ''} ? ~{layout :: navbar('Fleet Profile')} : ~{}"></nav>
+
+  <!--email_off-->
+  <div th:if="${widget == '' || widget == 'default'}" class="container profile">
+    <div class="row">
+      <div class="col text-center mt-3">
+        <img th:attr="src=${fleet.logo}" class="img-lg rounded border shadow" />
+        <h2 th:utext="${fleet.name}" class="mt-3"></h2>
+      </div>
+    </div>
+
+    <div class="row mt-3">
+      <div class="col">
+        <ul class="nav nav-tabs" id="myTab" role="tablist">
+          <li class="nav-item">
+            <a class="nav-link active" id="links-members" data-toggle="tab" href="#members" role="tab" aria-controls="members"
+              aria-selected="true">Members</a>
+          </li>
+
+          <li class="nav-item">
+            <a class="nav-link" id="profile-tab" data-toggle="tab" href="#profile" role="tab" aria-controls="profile"
+              aria-selected="false">Profile</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" id="links-tab" data-toggle="tab" href="#links" role="tab" aria-controls="links"
+              aria-selected="false">Links</a>
+          </li>
+        </ul>
+
+        <div class="tab-content" id="myTabContent">
+          <div class="tab-pane fade show active" id="members" role="tabpanel" aria-labelledby="members-tab">
+            <table class="table table-hover table-sm table-properties">
+              <tr>
+                <th></th>
+                <th>client name</th>
+                <th>client id</th>
+              </tr>
+              <tbody th:each="member : ${fleet.members}">
+                <tr class="clickable-row" th:attr="data-href=${member.clientUri}">
+                  <td>
+                    <img th:attr="src=${member.logoUri}" class="border shadow-sm rounded mt-1 mb-1 img-sm" />
+                  </td>
+                  <td class="align-middle">
+                    <h5 th:utext="${member.clientName}"></h5>
+                  </td>
+                  <td class="align-middle">
+                    <span th:utext="${member.clientId}"></span>
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+
+          <div class="tab-pane fade" id="profile" role="tabpanel" aria-labelledby="profile-tab">
+            <table class="table table-hover table-sm table-properties">
+              <tr>
+                <th>subject</th>
+                <td th:utext="${fleet.sub}"></td>
+              </tr>
+              <tr>
+                <th>logo email</th>
+                <td th:utext="${fleet.logoEmail}"></td>
+              </tr>
+            </table>
+          </div>
+
+
+          <div class="tab-pane fade" id="links" role="tabpanel" aria-labelledby="links-tab">
+            <table class="table table-hover table-sm table-properties">
+              <tr>
+                <th>@id</th>
+                <td><a th:utext="${fleet.id}" th:attr="href=${fleet.id}"></a></td>
+              </tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+  <script>
+    jQuery(document).ready(function ($) {
+      $(".clickable-row").click(function () {
+        window.location = $(this).data("href");
+      });
+    });
+  </script>
+
+  <div th:replace="${widget != '' && widget != 'default'} ? ~{settings :: widgets} : ~{}"></div>
+  <!--/email_off-->
+</body>
+
+</html>
