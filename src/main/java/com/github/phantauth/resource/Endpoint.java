@@ -7,46 +7,29 @@ import java.io.UnsupportedEncodingException;
 import java.net.*;
 
 public enum Endpoint {
-    INDEX(Endpoint.INDEX_PATH_SPEC),
-    USER(Endpoint.USER_PATH_SPEC),
-    CLIENT(Endpoint.CLIENT_PATH_SPEC),
-    TEAM(Endpoint.TEAM_PATH_SPEC),
-    FLEET(Endpoint.FLEET_PATH_SPEC),
-    TENANT(Endpoint.TENANT_PATH_SPEC),
-    DOMAIN(Endpoint.DOMAIN_PATH_SPEC),
-    TEST(Endpoint.TEST_PATH_SPEC),
-    WELL_KNOWN(Endpoint.WELL_KNOWN_PATH_SPEC),
-    JWKS(Endpoint.JWKS_PATH_SPEC),
-    REGISTER(Endpoint.REGISTER_PATH_SPEC),
-    INTROSPECTION(Endpoint.INTROSPECTION_PATH_SPEC),
-    AUTHORIZATION(Endpoint.AUTHORIZATION_PATH_SPEC),
-    TOKEN(Endpoint.TOKEN_PATH_SPEC),
-    USERINFO(Endpoint.USERINFO_PATH_SPEC),
-    ME(Endpoint.ME_PATH_SPEC) {
+    INDEX("/index/*"),
+    USER("/user/*"),
+    CLIENT("/client/*"),
+    TEAM("/team/*"),
+    FLEET("/fleet/*"),
+    TENANT("/tenant/*"),
+    DOMAIN("/domain/*"),
+    TEST("/test/*"),
+    WELL_KNOWN("/.well-known/*"),
+    JWKS("/auth/jwks/*"),
+    REGISTER("/auth/register/*"),
+    INTROSPECTION("/auth/introspect/*"),
+    AUTHORIZATION("/auth/authorize/*"),
+    TOKEN("/auth/token/*"),
+    USERINFO("/auth/userinfo/*"),
+    ME("/me/*") {
         @Override
         public String toProfile(String issuer, String subject) {
             return issuer + "/~" + urlencode(subject);
         }
     };
 
-    public static final String INDEX_PATH_SPEC = "/index/*";
-    public static final String USER_PATH_SPEC = "/user/*";
-    public static final String CLIENT_PATH_SPEC = "/client/*";
-    public static final String TEAM_PATH_SPEC = "/team/*";
-    public static final String FLEET_PATH_SPEC = "/fleet/*";
-    public static final String TENANT_PATH_SPEC = "/tenant/*";
-    public static final String DOMAIN_PATH_SPEC = "/domain/*";
-    public static final String TEST_PATH_SPEC = "/test/*";
-    public static final String WELL_KNOWN_PATH_SPEC = "/.well-known/*";
-    public static final String JWKS_PATH_SPEC = "/auth/jwks/*";
-    public static final String REGISTER_PATH_SPEC = "/auth/register/*";
-    public static final String INTROSPECTION_PATH_SPEC = "/auth/introspect/*";
-    public static final String AUTHORIZATION_PATH_SPEC = "/auth/authorize/*";
-    public static final String TOKEN_PATH_SPEC = "/auth/token/*";
-    public static final String USERINFO_PATH_SPEC = "/auth/userinfo/*";
-    public static final String ME_PATH_SPEC = "/me/*";
-
-    public static final String WILDCHAR = "/*";
+    private static final String WILDCARD = "/*";
 
     @Getter
     private final String path;
@@ -56,7 +39,7 @@ public enum Endpoint {
 
     Endpoint(final String pathSpec) {
         this.pathSpec = pathSpec;
-        this.path = pathSpec.endsWith(WILDCHAR) ? pathSpec.substring(0, pathSpec.length()-WILDCHAR.length()) : pathSpec;
+        this.path = pathSpec.endsWith(WILDCARD) ? pathSpec.substring(0, pathSpec.length()- WILDCARD.length()) : pathSpec;
     }
 
     public String resolve(final String issuer) {

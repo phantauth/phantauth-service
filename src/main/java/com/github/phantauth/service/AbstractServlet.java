@@ -1,22 +1,3 @@
-/*
- * Apache License, Version 2.0
- *
- * Copyright 2019 Ivan SZKIBA https://www.linkedin.com/in/szkiba
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *     http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- *
- */
-
 package com.github.phantauth.service;
 
 
@@ -25,8 +6,6 @@ import com.github.phantauth.core.Tenant;
 import com.github.phantauth.resource.Name;
 import com.github.phantauth.resource.TenantRepository;
 import com.github.phantauth.resource.Endpoint;
-import com.github.phantauth.service.NoCacheFilter;
-import com.github.phantauth.service.Response;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.http.CommonContentTypes;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
@@ -56,9 +35,9 @@ public abstract class AbstractServlet extends HttpServlet {
         this.tenantRepository = tenantRepository;
     }
 
-    protected abstract HTTPResponse doGet(final HTTPRequest req) throws IOException;
+    protected abstract HTTPResponse handleGet(final HTTPRequest req) throws IOException;
 
-    protected abstract HTTPResponse doPost(final HTTPRequest req) throws IOException;
+    protected abstract HTTPResponse handlePost(final HTTPRequest req) throws IOException;
 
     private String getCookieValue(final HttpServletRequest request, final String name) {
         final Cookie[] cookies = request.getCookies();
@@ -72,11 +51,11 @@ public abstract class AbstractServlet extends HttpServlet {
         return null;
     }
 
-    private HTTPRequest wrap(final HttpServletRequest servletRequest) throws IOException{
+    private HTTPRequest wrap(final HttpServletRequest servletRequest) throws IOException {
         final HTTPRequest request = ServletUtils.createHTTPRequest(servletRequest);
 
         final String cookie;
-        if ( ! request.getQueryParameters().containsKey(TokenKind.LOGIN.getName()) ) {
+        if (!request.getQueryParameters().containsKey(TokenKind.LOGIN.getName())) {
             cookie = getCookieValue(servletRequest, TokenKind.LOGIN.getName());
         } else {
             cookie = null;
@@ -86,12 +65,12 @@ public abstract class AbstractServlet extends HttpServlet {
 
         boolean json = request.getContentType() != null && request.getContentType().match(CommonContentTypes.APPLICATION_JSON);
 
-        if ( json ) {
+        if (json) {
             try {
                 final JSONObject params = request.getQueryAsJSONObject();
                 params.put(PARAM_TENANT, tenant.getSub());
                 params.put(PARAM_ISSUER, tenant.getIssuer());
-                if ( cookie != null ) {
+                if (cookie != null) {
                     params.put(TokenKind.LOGIN.getName(), cookie);
                 }
                 // Azure AD B2C workaround
@@ -104,7 +83,7 @@ public abstract class AbstractServlet extends HttpServlet {
             final Map<String, String> params = request.getQueryParameters();
             params.put(PARAM_TENANT, tenant.getSub());
             params.put(PARAM_ISSUER, tenant.getIssuer());
-            if ( cookie != null ) {
+            if (cookie != null) {
                 params.put(TokenKind.LOGIN.getName(), cookie);
             }
             // Azure AD B2C workaround
@@ -119,13 +98,12 @@ public abstract class AbstractServlet extends HttpServlet {
         ServletUtils.applyHTTPResponse(response, servletResponse);
     }
 
-    @Override
-    protected void doGet(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) throws IOException {
-        final HTTPRequest request = wrap(servletRequest);
+    protected void handleGet(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) throws IOException {
         HTTPResponse response;
 
         try {
-            response = doGet(request);
+            final HTTPRequest request = wrap(servletRequest);
+            response = handleGet(request);
         } catch (Exception e) {
             servletRequest.getServletContext().log(e.getMessage(), e);
             response = Response.map(e);
@@ -135,18 +113,39 @@ public abstract class AbstractServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) throws IOException {
+    protected final void doGet(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) {
+
+        try {
+            handleGet(servletRequest, servletResponse);
+        } catch (IOException e) {
+            servletRequest.getServletContext().log(e.getMessage(), e);
+            servletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    protected void handlePost(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) throws IOException {
         final HTTPRequest request = wrap(servletRequest);
         HTTPResponse response;
 
         try {
-            response = doPost(request);
+            response = handlePost(request);
         } catch (Exception e) {
             servletRequest.getServletContext().log(e.getMessage(), e);
             response = Response.map(e);
         }
 
         apply(response, servletResponse);
+    }
+
+    @Override
+    protected final void doPost(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) {
+
+        try {
+            handlePost(servletRequest, servletResponse);
+        } catch (IOException e) {
+            servletRequest.getServletContext().log(e.getMessage(), e);
+            servletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+        }
     }
 
     protected Tenant getTenant(final HttpServletRequest servletRequest) {
@@ -166,7 +165,7 @@ public abstract class AbstractServlet extends HttpServlet {
     }
 
     protected Tenant getSubTenant(final Tenant tenant) {
-        if ( ! tenant.isSubtenant() ) {
+        if (!tenant.isSubtenant()) {
             return tenant;
         }
 
@@ -174,7 +173,7 @@ public abstract class AbstractServlet extends HttpServlet {
     }
 
     protected HTTPResponse cache(final HTTPResponse response, final int maxAge) {
-        final String value = maxAge <=0 ? NoCacheFilter.NOCACHE : String.format("public,max-age=%d,s-maxage=%d", maxAge, maxAge);
+        final String value = maxAge <= 0 ? NoCacheFilter.NOCACHE : String.format("public,max-age=%d,s-maxage=%d", maxAge, maxAge);
         response.setHeader(NoCacheFilter.CACHE_CONTROL, value);
         return response;
     }

@@ -1,12 +1,10 @@
 package com.github.phantauth.flow;
 
 import com.github.phantauth.core.Claim;
-;
 import com.github.phantauth.core.Client;
 import com.github.phantauth.core.User;
 import com.github.phantauth.resource.Repository;
 import com.github.phantauth.resource.TenantRepository;
-;
 import com.github.phantauth.token.ClientTokenFactory;
 import com.github.phantauth.token.UserTokenFactory;
 import com.nimbusds.oauth2.sdk.*;
@@ -15,7 +13,6 @@ import com.nimbusds.openid.connect.sdk.*;
 
 import javax.inject.Inject;
 import javax.inject.Singleton;
-import java.net.URI;
 
 @Singleton
 public class HybridFlow extends AbstractFlow {

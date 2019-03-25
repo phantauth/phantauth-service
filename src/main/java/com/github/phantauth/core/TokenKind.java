@@ -13,7 +13,7 @@ public enum TokenKind {
     REFRESH("refresh_token", TimeUnit.DAYS.toMillis(365), Patterns.JWT),
     REGISTRATION("registration_access_token", TimeUnit.DAYS.toMillis(365), Patterns.JWT),
     LOGIN("login_token", TimeUnit.DAYS.toMillis(30), Patterns.JWT),
-    SELFIE("selfie_token", TimeUnit.DAYS.toMillis(5 * 365), Patterns.JWE),
+    SELFIE("selfie_token", TimeUnit.DAYS.toMillis(5 * 365L), Patterns.JWE),
     PLAIN("plain_token", Long.MAX_VALUE, Patterns.PLAIN),
     API("apikey", TimeUnit.DAYS.toMillis(365), Patterns.JWT);
 

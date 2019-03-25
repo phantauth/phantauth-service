@@ -19,12 +19,13 @@ import org.immutables.value.Value;
 @JsonSerialize(as = Address.class)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public interface Address {
+
     /**
      * Full mailing address, formatted for display or use on a mailing label. This field MAY contain multiple lines, separated by newlines. Newlines can be represented either as a carriage return/line feed pair or as a single line feed character.
      *
      * @return formatted
      **/
-    @JsonProperty("formatted")
+    @JsonProperty(Property.FORMATTED)
     @ApiModelProperty(value = "Full mailing address, formatted for display or use on a mailing label. This field MAY contain multiple lines, separated by newlines. Newlines can be represented either as a carriage return/line feed pair or as a single line feed character.")
     @JsonView(Views.Standard.class)
     String getFormatted();
@@ -34,7 +35,7 @@ public interface Address {
      *
      * @return streetAddress
      **/
-    @JsonProperty("street_address")
+    @JsonProperty(Property.STREET_ADDRESS)
     @ApiModelProperty(value = "Full street address component, which MAY include house number, street name, Post Office Box, and multi-line extended street address information. This field MAY contain multiple lines, separated by newlines. Newlines can be represented either as a carriage return/line feed pair or as a single line feed character.")
     @JsonView(Views.Standard.class)
     String getStreetAddress();
@@ -44,7 +45,7 @@ public interface Address {
      *
      * @return locality
      **/
-    @JsonProperty("locality")
+    @JsonProperty(Property.LOCALITY)
     @ApiModelProperty(value = "City or locality component.")
     @JsonView(Views.Standard.class)
     String getLocality();
@@ -54,7 +55,7 @@ public interface Address {
      *
      * @return region
      **/
-    @JsonProperty("region")
+    @JsonProperty(Property.REGION)
     @ApiModelProperty(value = "State, province, prefecture, or region component.")
     @JsonView(Views.Standard.class)
     String getRegion();
@@ -64,7 +65,7 @@ public interface Address {
      *
      * @return postalCode
      **/
-    @JsonProperty("postal_code")
+    @JsonProperty(Property.POSTAL_CODE)
     @ApiModelProperty(value = "Zip code or postal code component.")
     @JsonView(Views.Standard.class)
     String getPostalCode();
@@ -74,11 +75,11 @@ public interface Address {
      *
      * @return country
      **/
-    @JsonProperty("country")
+    @JsonProperty(Property.COUNTRY)
     @ApiModelProperty(value = "Country name component.")
     @JsonView(Views.Standard.class)
     String getCountry();
 
-    class Builder extends AddressValue.Builder {
+    class Builder extends AddressValue.BuilderBase {
     }
 }

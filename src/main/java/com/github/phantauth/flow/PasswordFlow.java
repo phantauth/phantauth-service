@@ -2,11 +2,9 @@ package com.github.phantauth.flow;
 
 import com.github.phantauth.core.Client;
 import com.github.phantauth.core.User;
-;
 import com.github.phantauth.core.Tenant;
 import com.github.phantauth.resource.Repository;
 import com.github.phantauth.resource.TenantRepository;
-;
 import com.github.phantauth.token.ClientTokenFactory;
 import com.github.phantauth.token.UserTokenFactory;
 import com.nimbusds.oauth2.sdk.*;
@@ -35,6 +33,11 @@ public class PasswordFlow extends AbstractFlow {
     @Override
     boolean implied(final TokenRequest request) {
         return request.getAuthorizationGrant() != null && request.getAuthorizationGrant().getType().equals(GrantType.PASSWORD);
+    }
+
+    @Override
+    Response handle(final AuthorizationRequest request) {
+        return new AuthorizationErrorResponse(request.getRedirectionURI(), OAuth2Error.UNSUPPORTED_RESPONSE_TYPE, request.getState(), request.getResponseMode());
     }
 
     @Override

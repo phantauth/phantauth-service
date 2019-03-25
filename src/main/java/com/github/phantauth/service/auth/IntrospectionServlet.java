@@ -23,7 +23,6 @@ import com.github.phantauth.core.Tenant;
 import com.github.phantauth.core.User;
 import com.github.phantauth.resource.Repository;
 import com.github.phantauth.resource.TenantRepository;
-;
 import com.github.phantauth.resource.Endpoint;
 import com.github.phantauth.service.AbstractServlet;
 import com.github.phantauth.token.TokenManager;
@@ -56,7 +55,7 @@ public class IntrospectionServlet extends AbstractServlet {
         this.repository = userRepository;
     }
 
-    protected HTTPResponse doGet(final HTTPRequest req) {
+    protected HTTPResponse handleGet(final HTTPRequest req) {
         final Tenant tenant = getTenant(req);
 
         final TokenIntrospectionRequest request;
@@ -94,7 +93,7 @@ public class IntrospectionServlet extends AbstractServlet {
     }
 
     @Override
-    protected HTTPResponse doPost(final HTTPRequest req) {
-        return doGet(req);
+    protected HTTPResponse handlePost(final HTTPRequest req) {
+        return handleGet(req);
     }
 }

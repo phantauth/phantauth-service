@@ -73,7 +73,8 @@ public class TemplateManager {
         engine.addTemplateResolver(tenantResolver);
     }
 
-    public String process(final Tenant tenant, final String template, final Pair<String, Object>... variables) {
+    @SafeVarargs
+    public final String process(final Tenant tenant, final String template, final Pair<String, Object>... variables) {
         final Context context = new Context();
         final ImmutableMap.Builder<String, Object> builder = ImmutableMap.builder();
         Tenant actualTenant = null;

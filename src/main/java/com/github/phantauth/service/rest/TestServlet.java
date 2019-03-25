@@ -2,16 +2,11 @@ package com.github.phantauth.service.rest;
 
 import com.github.phantauth.core.Tenant;
 import com.github.phantauth.exception.RequestMethodException;
-import com.github.phantauth.flow.AuthorizationFlow;
 import com.github.phantauth.resource.Endpoint;
 import com.github.phantauth.resource.TenantRepository;
-import com.github.phantauth.service.AbstractServlet;
-import com.github.phantauth.service.Request;
-import com.github.phantauth.service.Response;
-import com.github.phantauth.service.TemplateManager;
+import com.github.phantauth.service.*;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
-import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.inject.Inject;
@@ -33,16 +28,16 @@ public class TestServlet extends AbstractServlet {
     }
 
     @Override
-    protected HTTPResponse doGet(final HTTPRequest req) {
-        final Request.Param param = Request.param(req, Endpoint.TEST);
+    protected HTTPResponse handleGet(final HTTPRequest req) {
+        final Param param = Param.build(req, Endpoint.TEST);
         final Tenant tenant = getTenant(req);
 
-        final HTTPResponse response = Response.html(templateManager.process(tenant,"test", Pair.of(VAR_WIDGET, Optional.ofNullable(param.subject).orElse(""))));
+        final HTTPResponse response = Response.html(templateManager.process(tenant,"test", Pair.of(VAR_WIDGET, Optional.ofNullable(param.getSubject()).orElse(""))));
         return cache(response, (int) TimeUnit.MILLISECONDS.toSeconds(templateManager.getTemplateTTL()));
     }
 
     @Override
-    protected HTTPResponse doPost(final HTTPRequest req) {
+    protected HTTPResponse handlePost(final HTTPRequest req) {
         throw new RequestMethodException(req.getMethod().name());
     }
 }

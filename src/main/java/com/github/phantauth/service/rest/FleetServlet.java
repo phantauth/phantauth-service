@@ -1,7 +1,6 @@
 package com.github.phantauth.service.rest;
 
 import com.github.phantauth.core.Fleet;
-;
 import com.github.phantauth.resource.Repository;
 import com.github.phantauth.resource.TenantRepository;
 import com.github.phantauth.resource.Endpoint;

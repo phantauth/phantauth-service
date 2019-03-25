@@ -20,6 +20,7 @@ import java.lang.annotation.Target;
         jdkOnly = true,
         validationMethod = Value.Style.ValidationMethod.NONE,
         visibility = Value.Style.ImplementationVisibility.PUBLIC, builderVisibility = Value.Style.BuilderVisibility.PACKAGE,
+        typeBuilder = "BuilderBase",
         typeAbstract = {"Abstract*", "Basic*"}, typeImmutable = "*Value", typeModifiable = "*Bean")
 @interface PhantAuthResourceImmutablesStyle {
 }

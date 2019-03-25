@@ -25,6 +25,10 @@ import java.util.function.Function;
 @Module
 public class ResourceModule {
 
+    private ResourceModule() {
+        // no instances
+    }
+
     @Provides @Singleton
     static Repository<User> provideUserRepository(final UserTokenFactory tokenFactory, final UserFactory factory, final UserDepot depot, final UserFaker faker) {
         return new Repository<>(tokenFactory, factory, depot, faker);

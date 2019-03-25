@@ -1,7 +1,6 @@
 package com.github.phantauth.token;
 
 import com.github.phantauth.core.*;
-import com.github.phantauth.resource.Name;
 import com.google.common.base.Preconditions;
 import com.nimbusds.jwt.JWT;
 import net.minidev.json.JSONObject;
@@ -43,10 +42,12 @@ public class ClientTokenFactory extends AbstractTokenFactory<Client> {
         return convert(obj);
     }
 
+    @Override
     void removeSubject(final Map<String,Object> claims) {
         claims.remove("client_id");
     }
 
+    @Override
     void addSubject(final JSONObject json, final String value) {
         json.put("client_id", value);
     }

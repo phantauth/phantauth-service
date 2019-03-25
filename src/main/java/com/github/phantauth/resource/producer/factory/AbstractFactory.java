@@ -9,12 +9,13 @@ import com.github.phantauth.resource.Name;
 import com.github.phantauth.resource.Producer;
 import com.github.phantauth.resource.producer.AbstractExternalProducer;
 import com.github.phantauth.resource.producer.ExternalCache;
-import com.google.common.base.Strings;
+import lombok.extern.flogger.Flogger;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.concurrent.ExecutionException;
 
+@Flogger
 public class AbstractFactory<T> extends AbstractExternalProducer<T> implements Producer<T> {
     private static final int CACHE_MAX_ENTRIES = 512;
 
@@ -54,7 +55,7 @@ public class AbstractFactory<T> extends AbstractExternalProducer<T> implements P
         try {
             return cache.get(uri);
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            log.atWarning().withCause(e).log();
             throw new InvalidParameterException(uri);
         }
     }

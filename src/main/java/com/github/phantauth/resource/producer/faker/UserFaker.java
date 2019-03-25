@@ -27,6 +27,7 @@ public class UserFaker extends AbstractFaker<User> {
 
     @Inject
     public UserFaker() {
+        // just for Inject annotation
     }
 
     @Override

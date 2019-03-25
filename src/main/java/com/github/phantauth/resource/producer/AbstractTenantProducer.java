@@ -75,52 +75,52 @@ abstract class AbstractTenantProducer implements Producer<Tenant> {
 
     private Map<String, Object> defaults(final Map<String, Object> props, final Name name) {
 
-        if ( props.containsKey(Tenant.FACTORY) && ! props.containsKey(Tenant.FACTORIES)) {
-            props.put(Tenant.FACTORIES, DEFAULT_FACTORIES);
+        if ( props.containsKey(Property.FACTORY) && ! props.containsKey(Property.FACTORIES)) {
+            props.put(Property.FACTORIES, DEFAULT_FACTORIES);
         }
 
-        if (props.containsKey(Tenant.SHEET)) {
-            props.put(Tenant.DEPOT, String.format(GOOGLE_SHEET_PATTERN, props.get(Tenant.SHEET)));
+        if (props.containsKey(Property.SHEET)) {
+            props.put(Property.DEPOT, String.format(GOOGLE_SHEET_PATTERN, props.get(Property.SHEET)));
         }
 
-        if ( props.containsKey(Tenant.DEPOT) && ! props.containsKey(Tenant.DEPOTS) ) {
-            props.put(Tenant.DEPOTS, DEFAULT_DEPOTS);
+        if ( props.containsKey(Property.DEPOT) && ! props.containsKey(Property.DEPOTS) ) {
+            props.put(Property.DEPOTS, DEFAULT_DEPOTS);
         }
 
-        if ( ! props.containsKey(Tenant.TEMPLATE) ) {
-            props.put(Tenant.TEMPLATE, defaultTenantTemplate);
+        if ( ! props.containsKey(Property.TEMPLATE) ) {
+            props.put(Property.TEMPLATE, defaultTenantTemplate);
         }
 
         if ( ! name.getFlags().isDefault() ) {
-            props.put(Tenant.FLAGS, name.getFlags().format(false));
+            props.put(Property.FLAGS, name.getFlags().format());
         }
 
-        if ( ! props.containsKey(Tenant.NAME) ) {
-            props.put(Tenant.NAME, WordUtils.capitalize(name.getUserInfo().replace('.',' ')));
+        if ( ! props.containsKey(Property.NAME) ) {
+            props.put(Property.NAME, WordUtils.capitalize(name.getUserInfo().replace('.',' ')));
         }
 
-        if ( ! props.containsKey(Tenant.LOGO)) {
-            props.put(Tenant.LOGO, defaultLogo);
+        if ( ! props.containsKey(Property.LOGO)) {
+            props.put(Property.LOGO, defaultLogo);
         }
 
         final String issuer = getIssuer(name);
 
-        if ( ! props.containsKey(Tenant.WEBSITE)) {
-            props.put(Tenant.WEBSITE, issuer);
+        if ( ! props.containsKey(Property.WEBSITE)) {
+            props.put(Property.WEBSITE, issuer);
         }
 
-        props.put(Tenant.ISSUER, issuer);
-        props.put(Tenant.ID, Endpoint.TENANT.toResource(issuer, name.getSubject()));
-        props.put(Tenant.SUB, name.getSubject());
+        props.put(Property.ISSUER, issuer);
+        props.put(Property.ID, Endpoint.TENANT.toResource(issuer, name.getSubject()));
+        props.put(Property.SUB, name.getSubject());
         if ( ! name.isHostEmpty() ) {
-            props.put(Tenant.USERINFO, name.getUserInfo());
+            props.put(Property.USERINFO, name.getUserInfo());
         }
         if ( ! name.isInstanceEmpty() ) {
-            props.put(Tenant.SUBTENANT, true);
+            props.put(Property.SUBTENANT, true);
         }
 
         if ( props.containsKey(DNSDomainProducer.PROP_TENANTS) ) {
-            props.put(Tenant.DOMAIN, true);
+            props.put(Property.DOMAIN, true);
         }
 
         return props;

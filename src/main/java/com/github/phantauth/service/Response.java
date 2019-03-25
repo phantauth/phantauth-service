@@ -17,6 +17,11 @@ import javax.mail.internet.ParseException;
 import java.io.IOException;
 
 public class Response {
+
+    private Response() {
+        // no instances
+    }
+
     private static final ObjectMapper MAPPER = new ObjectMapper()
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
             .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
@@ -27,14 +32,12 @@ public class Response {
     private static final ContentType HTML;
     private static final ContentType JSON;
     private static final ContentType JRD;
-    private static final ContentType XML;
 
     static {
         JSON = CommonContentTypes.APPLICATION_JSON;
         try {
             TEXT = new ContentType("text/plain");
             HTML = new ContentType("text/html");
-            XML = new ContentType("text/xml");
             JRD = new ContentType("application/jrd+json");
         } catch (ParseException e) {
             throw new ConfigurationException("unable to parse standard content types");

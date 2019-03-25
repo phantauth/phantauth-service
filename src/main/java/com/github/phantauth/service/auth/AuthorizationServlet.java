@@ -4,18 +4,13 @@ import com.github.phantauth.core.*;
 import com.github.phantauth.core.Scope;
 import com.github.phantauth.flow.AuthorizationFlow;
 import com.github.phantauth.indie.IndieAuthResponseTypeValue;
-;
-import com.github.phantauth.core.Tenant;
-import com.github.phantauth.resource.Name;
 import com.github.phantauth.resource.Repository;
 import com.github.phantauth.resource.TenantRepository;
-;
 import com.github.phantauth.resource.Endpoint;
 import com.github.phantauth.service.AbstractServlet;
 import com.github.phantauth.service.TemplateManager;
 import com.github.phantauth.token.StorageToken;
 import com.github.phantauth.token.UserTokenFactory;
-import com.google.common.base.Strings;
 import com.nimbusds.oauth2.sdk.*;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
@@ -44,6 +39,7 @@ public class AuthorizationServlet extends AbstractServlet {
     private static final String PARAM_ME = "me";
     private static final String PARAM_CODE = "code";
     private static final String PARAM_SCOPE = "scope";
+    private static final String PARAM_CLAIMS = "claims";
     private static final String PARAM_LOGIN_HINT = "login_hint";
     private static final String CONSENT_CANCEL = "cancel";
 
@@ -65,6 +61,11 @@ public class AuthorizationServlet extends AbstractServlet {
         this.domainRepository = domainRepository;
     }
 
+    private Map<String, String> appendParam(final HTTPRequest req, final String name, final String value) {
+        req.setQuery(String.format("%s&%s=%s", req.getQuery(), name, value));
+        return req.getQueryParameters();
+    }
+
     boolean fixAndCheckIndie(final HTTPRequest req) {
 
         Map<String, String> params = req.getQueryParameters();
@@ -76,16 +77,14 @@ public class AuthorizationServlet extends AbstractServlet {
 
         // IndieAuth defaults response_type to "id"
         if (params.get(PARAM_RESPONSE_TYPE) == null) {
-            req.setQuery(String.format("%s&%s=%s", req.getQuery(), PARAM_RESPONSE_TYPE, IndieAuthResponseTypeValue.ID.getValue()));
-            params = req.getQueryParameters();
+            params = appendParam(req, PARAM_RESPONSE_TYPE, IndieAuthResponseTypeValue.ID.getValue());
         } else if (!params.get(PARAM_RESPONSE_TYPE).equals(IndieAuthResponseTypeValue.ID.getValue())) {
             return false;
         }
 
         // fictive indieauth scope
         if (!params.containsKey(PARAM_SCOPE)) {
-            req.setQuery(String.format("%s&%s=%s", req.getQuery(), PARAM_SCOPE, Scope.INDIEAUTH));
-            params = req.getQueryParameters();
+            params = appendParam(req, PARAM_SCOPE, Scope.INDIEAUTH.toString());
         }
 
         // convert ~ to /me/
@@ -100,14 +99,14 @@ public class AuthorizationServlet extends AbstractServlet {
             final String me = params.get(PARAM_ME);
             final int idx = me.indexOf(Endpoint.ME.getPath());
             if (idx >= 0) {
-                req.setQuery(String.format("%s&%s=%s", req.getQuery(), PARAM_LOGIN_HINT, me.substring(idx + Endpoint.ME.getPath().length() + 1)));
+                appendParam(req, PARAM_LOGIN_HINT, me.substring(idx + Endpoint.ME.getPath().length() + 1));
             }
         }
 
         return true;
     }
 
-    protected HTTPResponse doGet(final HTTPRequest req) {
+    protected HTTPResponse handleGet(final HTTPRequest req) {
 
         final AuthorizationRequest request;
 
@@ -175,13 +174,13 @@ public class AuthorizationServlet extends AbstractServlet {
     // quick & dirty implementation of claims request support
     private void mapClaimsToScopes(final HTTPRequest req) {
         final Map<String, String> params = req.getQueryParameters();
-        if (!params.containsKey("claims")) {
+        if (!params.containsKey(PARAM_CLAIMS)) {
             return;
         }
 
         final ClaimsRequest claimsRequest;
         try {
-            claimsRequest = ClaimsRequest.parse(params.get("claims"));
+            claimsRequest = ClaimsRequest.parse(params.get(PARAM_CLAIMS));
         } catch (ParseException e) {
             return;
         }
@@ -206,18 +205,18 @@ public class AuthorizationServlet extends AbstractServlet {
             }
         }
 
-        if (params.containsKey("scope")) {
-            for (Scope scope : Scope.split(params.get("scope"))) {
+        if (params.containsKey(PARAM_SCOPE)) {
+            for (Scope scope : Scope.split(params.get(PARAM_SCOPE))) {
                 scopes.add(scope.getName());
             }
         }
 
-        params.put("scope", String.join(" ", scopes));
+        params.put(PARAM_SCOPE, String.join(" ", scopes));
         req.setQuery(URLUtils.serializeParameters(params));
     }
 
     @Override
-    protected HTTPResponse doPost(final HTTPRequest req) {
-        return doGet(req);
+    protected HTTPResponse handlePost(final HTTPRequest req) {
+        return handleGet(req);
     }
 }

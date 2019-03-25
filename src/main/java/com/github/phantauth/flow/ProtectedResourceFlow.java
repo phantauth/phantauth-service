@@ -2,19 +2,15 @@ package com.github.phantauth.flow;
 
 import com.github.phantauth.core.Client;
 import com.github.phantauth.core.TokenKind;
-;
 import com.github.phantauth.core.Tenant;
 import com.github.phantauth.core.User;
 import com.github.phantauth.resource.Repository;
 import com.github.phantauth.resource.TenantRepository;
-;
 import com.github.phantauth.token.ClientTokenFactory;
 import com.github.phantauth.token.StorageToken;
 import com.github.phantauth.token.UserTokenFactory;
 import com.nimbusds.jose.jwk.JWKSet;
-import com.nimbusds.oauth2.sdk.GrantType;
-import com.nimbusds.oauth2.sdk.ResponseType;
-import com.nimbusds.oauth2.sdk.Scope;
+import com.nimbusds.oauth2.sdk.*;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.auth.Secret;
 import com.nimbusds.oauth2.sdk.id.ClientID;
@@ -45,6 +41,26 @@ public class ProtectedResourceFlow extends AbstractFlow {
         super(tenantRepository, userRepository, userTokenFactory, clientRepository, clientTokenFactory);
     }
 
+    @Override
+    boolean implied(AuthorizationRequest request) {
+        throw new IllegalStateException();
+    }
+
+    @Override
+    boolean implied(TokenRequest request) {
+        throw new IllegalStateException();
+    }
+
+    @Override
+    Response handle(final AuthorizationRequest request) {
+        throw new IllegalStateException();
+    }
+
+    @Override
+    Response handle(final TokenRequest request) {
+        throw new IllegalStateException();
+    }
+
     public UserInfo getUserInfo(final Tenant tenant, final AccessToken accessToken) {
         final StorageToken storageToken = userTokenFactory.parseStorageToken(accessToken.toString(), TokenKind.ACCESS);
         final Tenant tokenTenant = storageToken.getTenant() == null ? tenant : tenantRepository.get(storageToken.getTenant());
@@ -57,7 +73,7 @@ public class ProtectedResourceFlow extends AbstractFlow {
 
         final OIDCClientMetadata meta = newClientMetadata(client);
 
-        final OIDCClientInformation info = new OIDCClientInformation(
+        return new OIDCClientInformation(
                 clientId,
                 new Date(),
                 meta,
@@ -65,8 +81,6 @@ public class ProtectedResourceFlow extends AbstractFlow {
                 URI.create(endpoint.toExternalForm()),
                 new BearerAccessToken(clientTokenFactory.newStorageToken(StorageToken.Builder.of(tenant, TokenKind.REGISTRATION, client.getClientId())))
         );
-
-        return info;
     }
 
     public static Client newClient(final OIDCClientMetadata meta) {
@@ -110,15 +124,15 @@ public class ProtectedResourceFlow extends AbstractFlow {
         meta.setEmailContacts(client.getContacts());
 
         if ( client.getGrantTypes() != null  ) {
-            meta.setGrantTypes(client.getGrantTypes().stream().map(str -> new GrantType(str)).collect(Collectors.toSet()));
+            meta.setGrantTypes(client.getGrantTypes().stream().map(GrantType::new).collect(Collectors.toSet()));
         }
 
         if ( client.getRedirectUris() != null ) {
-            meta.setRedirectionURIs(client.getRedirectUris().stream().map(str -> URI.create(str)).collect(Collectors.toSet()));
+            meta.setRedirectionURIs(client.getRedirectUris().stream().map(URI::create).collect(Collectors.toSet()));
         }
 
         if ( client.getResponseTypes() != null ) {
-            meta.setResponseTypes(client.getResponseTypes().stream().map(str -> new ResponseType(str)).collect(Collectors.toSet()));
+            meta.setResponseTypes(client.getResponseTypes().stream().map(ResponseType::new).collect(Collectors.toSet()));
         }
 
         if ( client.getJwks() != null ) {
@@ -142,7 +156,7 @@ public class ProtectedResourceFlow extends AbstractFlow {
 
     static List<String> toStringList(final Collection<?> collection) {
         if ( collection == null || collection.isEmpty() ) {
-            return Collections.EMPTY_LIST;
+            return Collections.emptyList();
         }
         return collection.stream().map(object -> Objects.toString(object, null)).collect(Collectors.toList());
     }

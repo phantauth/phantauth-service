@@ -23,6 +23,10 @@ import java.util.function.Function;
 @Module
 public class TestModule {
 
+    private TestModule() {
+        // no instances
+    }
+
     private static final String DOMAIN = "devd.io";
 
     @Provides @Singleton

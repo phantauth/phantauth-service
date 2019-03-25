@@ -3,6 +3,7 @@ package com.github.phantauth.resource.producer;
 import com.damnhandy.uri.template.UriTemplate;
 import com.github.phantauth.exception.InvalidParameterException;
 import com.github.phantauth.resource.Name;
+import lombok.extern.flogger.Flogger;
 
 import javax.inject.Inject;
 import javax.inject.Named;
@@ -12,6 +13,7 @@ import java.net.URI;
 import java.util.*;
 import java.util.concurrent.ExecutionException;
 
+@Flogger
 public class ExternalTenantProducer extends AbstractTenantProducer {
 
     private static final String WELL_KNOWN_PATTERN = "https://{host}/.well-known/phantauth-tenant";
@@ -40,7 +42,7 @@ public class ExternalTenantProducer extends AbstractTenantProducer {
         final String host = name.getHost();
         final String uri;
 
-        if ( host.indexOf('.') > 0 ) {
+        if ( host.indexOf('.') >= 0 ) {
             uri = UriTemplate.fromTemplate(WELL_KNOWN_PATTERN).set("host", host).expand();
         } else {
             uri = BIT_LY_PREFIX + host;
@@ -49,7 +51,7 @@ public class ExternalTenantProducer extends AbstractTenantProducer {
         try {
             return cache.get(uri);
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            log.atWarning().withCause(e).log();
             throw new InvalidParameterException(uri);
         }
     }

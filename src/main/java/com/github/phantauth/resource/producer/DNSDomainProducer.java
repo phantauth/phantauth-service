@@ -3,6 +3,7 @@ package com.github.phantauth.resource.producer;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.github.phantauth.core.Domain;
+import com.github.phantauth.core.Property;
 import com.github.phantauth.core.Tenant;
 import com.github.phantauth.resource.Endpoint;
 import com.github.phantauth.resource.Name;
@@ -53,12 +54,12 @@ public class DNSDomainProducer implements Producer<Domain> {
 
     private Domain convert(final Tenant tenant, final Map<String, Object> props, final Name name) {
 
-        props.put(Domain.ID, Endpoint.DOMAIN.toResource(tenant.getIssuer(), name.getSubject()));
-        props.put(Domain.PROFILE, Endpoint.DOMAIN.toProfile(tenant.getIssuer(), name.getSubject()));
-        props.put(Domain.SUB, name.getSubject());
+        props.put(Property.ID, Endpoint.DOMAIN.toResource(tenant.getIssuer(), name.getSubject()));
+        props.put(Property.PROFILE, Endpoint.DOMAIN.toProfile(tenant.getIssuer(), name.getSubject()));
+        props.put(Property.SUB, name.getSubject());
 
-        if ( ! props.containsKey(Domain.LOGO)) {
-            props.put(Domain.LOGO, defaultLogo);
+        if ( ! props.containsKey(Property.LOGO)) {
+            props.put(Property.LOGO, defaultLogo);
         }
 
         final Domain domain = mapper.convertValue(props, Domain.class);
