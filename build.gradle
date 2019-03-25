@@ -116,6 +116,13 @@ shadowJar {
 task stage(dependsOn: ['shadowJar', 'test', 'build', 'clean'])
 build.mustRunAfter clean
 
+sonarqube {
+    properties {
+        property "sonar.projectName", "PhantAuth"
+        property "sonar.projectKey", "phantauth_phantauth-service"
+    }
+}
+
 /*
 jacoco {
     applyTo run
