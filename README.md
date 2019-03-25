@@ -1,3 +1,8 @@
+[![Build Status](https://travis-ci.org/phantauth/phantauth-service.svg?branch=master)](https://travis-ci.org/phantauth/phantauth-service) [![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=phantauth_phantauth-service&metric=alert_status)](https://sonarcloud.io/dashboard?id=phantauth_phantauth-service) [![Maintainability Rating](https://sonarcloud.io/api/project_badges/measure?project=phantauth_phantauth-service&metric=sqale_rating)](https://sonarcloud.io/dashboard?id=phantauth_phantauth-service) [![Reliability Rating](https://sonarcloud.io/api/project_badges/measure?project=phantauth_phantauth-service&metric=reliability_rating)](https://sonarcloud.io/dashboard?id=phantauth_phantauth-service) [![Security Rating](https://sonarcloud.io/api/project_badges/measure?project=phantauth_phantauth-service&metric=security_rating)](https://sonarcloud.io/dashboard?id=phantauth_phantauth-service)
+
 # PhantAuth Service
 
-OpenID Connect Provider for Random Generated Users
+Random User Generator + OpenID Connect Provider
+
+Like Lorem Ipsum, but for user accounts and authentication.
+
