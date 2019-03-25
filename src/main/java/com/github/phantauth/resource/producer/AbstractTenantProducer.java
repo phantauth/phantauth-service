@@ -92,7 +92,7 @@ abstract class AbstractTenantProducer implements Producer<Tenant> {
         }
 
         if ( ! name.getFlags().isDefault() ) {
-            props.put(Property.FLAGS, name.getFlags().format(false));
+            props.put(Property.FLAGS, name.getFlags().format());
         }
 
         if ( ! props.containsKey(Property.NAME) ) {

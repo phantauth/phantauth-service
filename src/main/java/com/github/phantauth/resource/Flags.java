@@ -57,11 +57,7 @@ public abstract class Flags {
     }
 
     public String format() {
-        return format(true);
-    }
-
-    public String format(final boolean includeDefault) {
-        if (isDefault() && !includeDefault) {
+        if (isDefault()) {
             return EMPTY_STRING;
         }
 

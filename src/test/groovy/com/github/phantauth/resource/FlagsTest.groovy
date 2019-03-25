@@ -64,4 +64,18 @@ class FlagsTest extends Specification {
         "dot;female;retro;fr_CA"         | Flags.Mail.DOT     | Flags.Avatar.RETRO     | Flags.Gender.FEMALE  | Locale.CANADA_FRENCH | Flags.Size.DEFAULT
         "plus;large"                     | Flags.Mail.PLUS    | Flags.Avatar.DEFAULT   | Flags.Gender.DEFAULT | Locale.US            | Flags.Size.LARGE
     }
+
+    def "test format with locale"() {
+        when:
+        Flags flags = Flags.parse("hu_HU")
+
+        then:
+        flags.format() == "hu_HU"
+
+        when:
+        flags = Flags.parse("sketch;hu_HU")
+
+        then:
+        flags.format() == "sketch;hu_HU"
+    }
 }
