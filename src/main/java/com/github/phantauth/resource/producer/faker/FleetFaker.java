@@ -11,11 +11,11 @@ import com.github.phantauth.resource.Name;
 import com.github.phantauth.resource.Producer;
 import com.github.phantauth.resource.producer.FakeName;
 import com.github.phantauth.resource.producer.Hashes;
-import com.google.common.io.BaseEncoding;
 import org.apache.commons.text.WordUtils;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import java.util.Base64;
 import java.util.Random;
 
 public class FleetFaker extends AbstractFaker<Fleet> {
@@ -72,7 +72,7 @@ public class FleetFaker extends AbstractFaker<Fleet> {
                 final StringBuilder buff = new StringBuilder(faker.app().name()).append('~');
                 final byte[] bytes = new byte[Long.BYTES];
                 random.nextBytes(bytes);
-                buff.append(BaseEncoding.base64Url().omitPadding().encode(bytes)).append(nameSuffix);
+                buff.append(Base64.getUrlEncoder().withoutPadding().encodeToString(bytes)).append(nameSuffix);
 
                 addMembers(clientProducer.get(tenant, Name.parse(buff.toString())));
             }

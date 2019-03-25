@@ -13,6 +13,11 @@ import java.text.ParseException;
 
 @Module
 public class ConfigPropsModule {
+
+    private ConfigPropsModule() {
+        // no instances
+    }
+
     @Provides @Named("serviceURI") @Singleton
     static URI provideServiceURI(final Config config) {
         return URI.create(config.getServiceURI());

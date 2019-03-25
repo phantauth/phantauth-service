@@ -6,8 +6,6 @@ import com.github.phantauth.core.Tenant;
 import com.github.phantauth.resource.Producer;
 import com.nimbusds.jwt.JWT;
 
-import java.net.URI;
-
 public interface TokenFactory<T> extends Producer<T> {
     String newStorageToken(StorageToken storage);
     StorageToken parseStorageToken(String token, TokenKind kind);

@@ -4,17 +4,14 @@ import com.github.phantauth.core.Domain;
 import com.github.phantauth.exception.RequestMethodException;
 import com.github.phantauth.core.Tenant;
 import com.github.phantauth.flow.AuthorizationFlow;
-import com.github.phantauth.resource.Name;
 import com.github.phantauth.resource.Repository;
 import com.github.phantauth.resource.TenantRepository;
 import com.github.phantauth.resource.Endpoint;
 import com.github.phantauth.service.AbstractServlet;
 import com.github.phantauth.service.Response;
 import com.github.phantauth.service.TemplateManager;
-import com.google.common.collect.ImmutableList;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
-import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.inject.Inject;
@@ -37,7 +34,7 @@ public class IndexServlet extends AbstractServlet {
     }
 
     @Override
-    protected HTTPResponse doGet(final HTTPRequest req) {
+    protected HTTPResponse handleGet(final HTTPRequest req) {
         final Tenant tenant = getSubTenant(req);
 
         final HTTPResponse response = Response.html(templateManager.process(tenant,"tenant", getTemplateParams(tenant)));
@@ -56,7 +53,7 @@ public class IndexServlet extends AbstractServlet {
     }
 
     @Override
-    protected HTTPResponse doPost(final HTTPRequest req) {
+    protected HTTPResponse handlePost(final HTTPRequest req) {
         throw new RequestMethodException(req.getMethod().name());
     }
 }

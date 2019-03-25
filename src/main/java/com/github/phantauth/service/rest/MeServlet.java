@@ -4,12 +4,8 @@ import com.github.phantauth.core.Tenant;
 import com.github.phantauth.core.User;
 import com.github.phantauth.resource.Repository;
 import com.github.phantauth.resource.TenantRepository;
-;
 import com.github.phantauth.resource.Endpoint;
-import com.github.phantauth.service.AbstractServlet;
-import com.github.phantauth.service.Request;
-import com.github.phantauth.service.Response;
-import com.github.phantauth.service.TemplateManager;
+import com.github.phantauth.service.*;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import org.apache.commons.lang3.tuple.Pair;
@@ -38,37 +34,37 @@ public class MeServlet extends AbstractServlet {
     }
 
     @Override
-    protected void doGet(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) throws IOException {
+    protected void handleGet(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) throws IOException {
         addIndieAuthHeaders(servletRequest, servletResponse);
-        super.doGet(servletRequest, servletResponse);
+        super.handleGet(servletRequest, servletResponse);
     }
 
     @Override
-    protected void doPost(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) throws IOException {
+    protected void handlePost(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) throws IOException {
         addIndieAuthHeaders(servletRequest, servletResponse);
-        super.doPost(servletRequest, servletResponse);
+        super.handlePost(servletRequest, servletResponse);
     }
 
-    protected HTTPResponse doGet(final HTTPRequest req) {
-        final Request.Param param = Request.param(req, endpoint);
+    protected HTTPResponse handleGet(final HTTPRequest req) {
+        final Param param = Param.build(req, endpoint);
         return processTemplate(getTenant(req), TEMPLATE_USER , param);
     }
 
     @Override
-    protected HTTPResponse doPost(final HTTPRequest req) {
-        return doGet(req);
+    protected HTTPResponse handlePost(final HTTPRequest req) {
+        return handleGet(req);
     }
 
-    private HTTPResponse processTemplate(final Tenant tenant, final String template, final Request.Param param) {
+    private HTTPResponse processTemplate(final Tenant tenant, final String template, final Param param) {
         final HTTPResponse response =  Response.html(templateManager.process(
                 tenant,
                 template,
-                Pair.of(ResourceServlet.VAR_QUERY, param.query),
-                Pair.of(ResourceServlet.VAR_PARAMS, param.params),
-                Pair.of(ResourceServlet.VAR_WIDGET, Optional.ofNullable(param.argument).orElse("")),
-                Pair.of(VAR_USER, repository.get(tenant, param.subject))
+                Pair.of(ResourceServlet.VAR_QUERY, param.getQuery()),
+                Pair.of(ResourceServlet.VAR_PARAMS, param.getParams()),
+                Pair.of(ResourceServlet.VAR_WIDGET, Optional.ofNullable(param.getArgument()).orElse("")),
+                Pair.of(VAR_USER, repository.get(tenant, param.getSubject()))
         ));
-        return cache(response, param.subject, (int)TimeUnit.MILLISECONDS.toSeconds(templateManager.getTemplateTTL()));
+        return cache(response, param.getSubject(), (int)TimeUnit.MILLISECONDS.toSeconds(templateManager.getTemplateTTL()));
     }
 
     void addIndieAuthHeaders(final HttpServletRequest servletRequest, final HttpServletResponse servletResponse) {

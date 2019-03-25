@@ -45,7 +45,7 @@ public class UserInfoServlet extends AbstractServlet {
         this.flow = flow;
     }
 
-    protected HTTPResponse doGet(final HTTPRequest req) {
+    protected HTTPResponse handleGet(final HTTPRequest req) {
 
         final UserInfoRequest request;
         try {
@@ -60,7 +60,7 @@ public class UserInfoServlet extends AbstractServlet {
     }
 
     @Override
-    protected HTTPResponse doPost(final HTTPRequest req) {
-        return doGet(req);
+    protected HTTPResponse handlePost(final HTTPRequest req) {
+        return handleGet(req);
     }
 }

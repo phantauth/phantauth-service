@@ -11,6 +11,10 @@ import java.util.Set;
 @Module
 public class AuthModule {
 
+    private AuthModule() {
+        // no instances
+    }
+
     @Provides
     @ElementsIntoSet
     static Set<AbstractServlet> provideAuthServlets(final AuthorizationServlet auth, final IntrospectionServlet intro, final JWKSServlet jwks, final RegisterServlet register, final TokenServlet token, final UserInfoServlet userinfo, final WellKnownServlet wellknown) {

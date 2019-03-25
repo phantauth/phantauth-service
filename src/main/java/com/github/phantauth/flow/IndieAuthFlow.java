@@ -2,10 +2,8 @@ package com.github.phantauth.flow;
 
 import com.github.phantauth.core.*;
 import com.github.phantauth.indie.IndieAuthResponseTypeValue;
-;
 import com.github.phantauth.resource.Repository;
 import com.github.phantauth.resource.TenantRepository;
-;
 import com.github.phantauth.token.ClientTokenFactory;
 import com.github.phantauth.token.StorageToken;
 import com.github.phantauth.token.UserTokenFactory;

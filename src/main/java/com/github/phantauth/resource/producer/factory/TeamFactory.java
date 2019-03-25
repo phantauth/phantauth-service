@@ -19,8 +19,6 @@
 
 package com.github.phantauth.resource.producer.factory;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.fasterxml.jackson.annotation.JsonView;
 import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import com.github.phantauth.core.*;
 import com.github.phantauth.resource.Endpoint;
@@ -29,7 +27,6 @@ import com.google.common.base.Strings;
 
 import javax.inject.Inject;
 import javax.inject.Named;
-import java.util.List;
 
 public class TeamFactory extends AbstractFactory<Team> {
 

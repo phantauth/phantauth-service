@@ -5,7 +5,6 @@ import com.github.phantauth.core.Tenant;
 import com.github.phantauth.resource.Endpoint;
 import com.github.phantauth.resource.Flags;
 import com.github.phantauth.resource.Name;
-import com.google.common.base.Charsets;
 import com.google.common.collect.ImmutableSet;
 import com.google.common.hash.Hashing;
 import lombok.Getter;
@@ -15,6 +14,7 @@ import org.passay.EnglishCharacterData;
 import org.passay.PasswordGenerator;
 
 import java.net.URI;
+import java.nio.charset.StandardCharsets;
 import java.util.Random;
 import java.util.Set;
 import java.util.function.Supplier;
@@ -77,7 +77,7 @@ public class FakeName extends Name {
     }
 
     private int newSeed() {
-        return Hashing.farmHashFingerprint64().hashString(getUserInfo(), Charsets.UTF_8).asInt();
+        return Hashing.farmHashFingerprint64().hashString(getUserInfo(), StandardCharsets.UTF_8).asInt();
     }
 
     public String getEmail() {
@@ -85,7 +85,7 @@ public class FakeName extends Name {
     }
 
     public String getEmail(final String mailbox) {
-        return new StringBuilder(mailbox).append(MAIL_SEPARATOR).append(domain).toString();
+        return mailbox + MAIL_SEPARATOR + domain;
     }
 
     public String getEmail(final String mailbox, final String tag) {

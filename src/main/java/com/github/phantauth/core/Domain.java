@@ -12,6 +12,6 @@ import org.immutables.value.Value;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public interface Domain extends Group<Tenant> {
 
-    class Builder extends DomainValue.Builder {
+    class Builder extends DomainValue.BuilderBase {
     }
 }

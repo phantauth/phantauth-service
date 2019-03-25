@@ -171,8 +171,8 @@ abstract class AbstractTokenFactory<T> implements TokenFactory<T> {
         final Map<String,Object> claims = MAPPER.convertValue(from, Map.class);
         removeSubject(claims);
         JWTClaimsSet.Builder builder = new JWTClaimsSet.Builder();
-        for(String key: claims.keySet()) {
-            builder.claim(key, claims.get(key));
+        for(Map.Entry<String, Object> entry: claims.entrySet()) {
+            builder.claim(entry.getKey(), entry.getValue());
         }
 
         return new PlainJWT(builder.build()).serialize();

@@ -14,7 +14,7 @@ public class ClientDepot extends AbstractDepot<Client> {
 
     @Inject
     public ClientDepot(@Named("ttl") final long cacheTTL) {
-        super(Client.class, client -> client.getClientId(), cacheTTL, ClientBean.class);
+        super(Client.class, Client::getClientId, cacheTTL, ClientBean.class);
     }
 
     @Override

@@ -11,6 +11,10 @@ import java.util.Set;
 @Module
 public class RestModule {
 
+    private RestModule() {
+        // no instances
+    }
+
     @Provides
     @ElementsIntoSet
     static Set<AbstractServlet> provideRestServlets(final UserServlet user, final TeamServlet team, final ClientServlet client, final FleetServlet fleet, final TenantServlet tenant, final DomainServlet domain) {

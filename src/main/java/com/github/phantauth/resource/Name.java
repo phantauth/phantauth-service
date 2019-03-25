@@ -45,7 +45,7 @@ public abstract class Name {
         return isUserInfoEmpty() ? new Builder( newUserInfo.get() + getAuthority() + Flags.DELIMITER + getFlags().format()).build() : this;
     }
 
-    public static class Builder extends NameValue.Builder {
+    public static class Builder extends NameValue.BuilderBase {
 
         Builder() {
         }
@@ -55,13 +55,13 @@ public abstract class Name {
 
             idx = input == null ? -1 : input.indexOf(Flags.DELIMITER);
 
-            final String flagsPart = idx < 0 ? null : idx + 1 > input.length() ? null : input.substring(idx + 1);
+            final String flagsPart = after(input, idx);
             final Flags flags = Flags.Builder.parse(flagsPart);
             setFlags(flags);
 
-            final String authorityPart = idx < 0 ? input : idx == 0 ? null : input.substring(0, idx);
+            final String authorityPart = before(input, idx);
 
-            final String authority = StringUtils.stripAccents((authorityPart == null ? EMPTY_STRING : authorityPart).toLowerCase()).replace(' ', '.');
+            final String authority = StringUtils.stripAccents((Strings.isNullOrEmpty(authorityPart) ? EMPTY_STRING : authorityPart).toLowerCase()).replace(' ', '.');
             setAuthority(authority);
             setAuthorityEmpty(Strings.isNullOrEmpty(authority));
 
@@ -69,19 +69,33 @@ public abstract class Name {
 
             idx = authority.indexOf(INSTANCE_SEPARATOR);
 
-            String userpart = idx < 0 ? authority : idx == 0 ? EMPTY_STRING : authority.substring(0, idx);
-            final String instance = idx < 0 || idx + 0 > authority.length() ? EMPTY_STRING : authority.substring(idx + 1);
+            final String userpart = before(authority, idx);
+            final String instance = after(authority, idx);
             setInstance(instance);
             setInstanceEmpty(Strings.isNullOrEmpty(instance));
 
             idx = userpart.indexOf(AUTHORITY_SEPARATOR);
-            final String userinfo = idx < 0 ? userpart : idx == 0 ? EMPTY_STRING : userpart.substring(0, idx);
+            final String userinfo = before(userpart, idx);
             setUserInfo(userinfo);
             setUserInfoEmpty(Strings.isNullOrEmpty(userinfo));
-            final String host = idx < 0 ? EMPTY_STRING : idx + 1 > userpart.length() ? EMPTY_STRING : userpart.substring(idx + 1);
+            final String host = after(userpart, idx);
             setHost(host);
             setHostEmpty(Strings.isNullOrEmpty(host));
             setRaw(input == null ? EMPTY_STRING : input);
+        }
+
+        static String before(final String input, final int separatorIndex) {
+            if ( separatorIndex < 0 ) {
+                return input;
+            }
+            return separatorIndex == 0 ? EMPTY_STRING : input.substring(0, separatorIndex);
+        }
+
+        static String after(final String input, final int separatorIndex) {
+            if ( separatorIndex < 0 || separatorIndex + 1 > input.length() ) {
+                return EMPTY_STRING;
+            }
+            return input.substring(separatorIndex + 1);
         }
     }
 }

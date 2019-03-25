@@ -1,11 +1,9 @@
 package com.github.phantauth.flow;
 
 import com.github.phantauth.core.*;
-;
 import com.github.phantauth.core.Scope;
 import com.github.phantauth.resource.Repository;
 import com.github.phantauth.resource.TenantRepository;
-;
 import com.github.phantauth.token.ClientTokenFactory;
 import com.github.phantauth.token.StorageToken;
 import com.github.phantauth.token.UserTokenFactory;
@@ -66,7 +64,7 @@ abstract class AbstractFlow {
                 accessTokenHash,
                 authorizationCodeHash,
                 maxAge,
-                scope == null ? Scope.DEFAULT_SCOPES: Scope.split(scope.toString())
+                scope == null ? Scope.getDefaultScopes(): Scope.split(scope.toString())
         );
     }
 
@@ -144,21 +142,13 @@ abstract class AbstractFlow {
         return userTokenFactory.parseStorageToken(token, TokenKind.LOGIN);
     }
 
-    boolean implied(final AuthorizationRequest request) {
-        return false;
-    }
+    abstract boolean implied(final AuthorizationRequest request);
 
-    boolean implied(final TokenRequest request) {
-        return false;
-    }
+    abstract boolean implied(final TokenRequest request);
 
-    Response handle(final AuthorizationRequest request) {
-        return new AuthorizationErrorResponse(request.getRedirectionURI(), OAuth2Error.UNSUPPORTED_RESPONSE_TYPE, request.getState(), request.getResponseMode());
-    }
+    abstract Response handle(final AuthorizationRequest request);
 
-    Response handle(final TokenRequest request) {
-        return new TokenErrorResponse(OAuth2Error.UNSUPPORTED_GRANT_TYPE);
-    }
+    abstract Response handle(final TokenRequest request);
 
     boolean impliesLogin(final AuthorizationRequest request) {
         final JWTClaimsSet hint = getIdTokenHint(request);

@@ -48,6 +48,9 @@ public class TokenManager {
             .keyType(KeyType.OCT)
             .build();
 
+    private static final String ENCRYPTION_PROBLEM = "encryption problem";
+    private static final String TOKEN_PARAMETER = "token";
+
 
     @Inject
     public TokenManager(final JWKSet keySet) {
@@ -103,7 +106,7 @@ public class TokenManager {
         try {
             jwt.sign(hmacSigner);
         } catch (JOSEException e) {
-            throw new ConfigurationException("encryption problem");
+            throw new ConfigurationException(ENCRYPTION_PROBLEM);
         }
         return jwt;
     }
@@ -112,7 +115,7 @@ public class TokenManager {
         try {
             return jwt.verify(hmacVerifier);
         } catch (JOSEException e) {
-            throw new InvalidParameterException("token");
+            throw new InvalidParameterException(TOKEN_PARAMETER);
         }
     }
 
@@ -121,7 +124,7 @@ public class TokenManager {
         try {
             jwt.sign(rsaSigner);
         } catch (JOSEException e) {
-            throw new ConfigurationException("encryption problem");
+            throw new ConfigurationException(ENCRYPTION_PROBLEM);
         }
         return jwt;
     }
@@ -130,7 +133,7 @@ public class TokenManager {
         try {
             return jwt.verify(rsaVerifier);
         } catch (JOSEException e) {
-            throw new InvalidParameterException("token");
+            throw new InvalidParameterException(TOKEN_PARAMETER);
         }
     }
 
@@ -140,7 +143,7 @@ public class TokenManager {
         try {
             jwe.encrypt(rsaEncrypter);
         } catch (JOSEException e) {
-            throw new ConfigurationException("encryption problem");
+            throw new ConfigurationException(ENCRYPTION_PROBLEM);
         }
 
         return jwe;
@@ -151,7 +154,7 @@ public class TokenManager {
         try {
             jwe = JWEObject.parse(compact);
         } catch (ParseException e) {
-            throw new InvalidParameterException("token");
+            throw new InvalidParameterException(TOKEN_PARAMETER);
         }
         return decrypt(jwe);
     }
@@ -165,7 +168,7 @@ public class TokenManager {
         } else if ( JWEAlgorithm.DIR.equals(alg) ) {
             return octDecrypt(jwe);
         } else {
-            throw new InvalidParameterException("token");
+            throw new InvalidParameterException(TOKEN_PARAMETER);
         }
     }
 
@@ -175,7 +178,7 @@ public class TokenManager {
             jwe.decrypt(rsaDecrypter);
             return jwe.getPayload();
         } catch (JOSEException e) {
-            throw new InvalidParameterException("token");
+            throw new InvalidParameterException(TOKEN_PARAMETER);
         }
     }
 
@@ -185,7 +188,7 @@ public class TokenManager {
         try {
             jwe.encrypt(octEncrypter);
         } catch (JOSEException e) {
-            throw new ConfigurationException("encryption problem");
+            throw new ConfigurationException(ENCRYPTION_PROBLEM);
         }
 
         return jwe;
@@ -197,13 +200,13 @@ public class TokenManager {
             jwe.decrypt(octDecrypter);
             return jwe.getPayload();
         } catch (JOSEException e) {
-            throw new InvalidParameterException("token");
+            throw new InvalidParameterException(TOKEN_PARAMETER);
         }
     }
 
     private static <T> T getKey(final JWKSet keySet, final Class<T> type, final JWKMatcher matcher, final JWKMatcher fallback) {
         List<JWK> keys = new JWKSelector(matcher).select(keySet);
-        if ( keys.size() == 0 ) {
+        if ( keys.isEmpty() ) {
             keys = new JWKSelector(fallback).select(keySet);
         }
         Preconditions.checkState(keys.size() == 1);

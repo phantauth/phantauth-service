@@ -1,7 +1,6 @@
 package com.github.phantauth.token;
 
 import com.github.phantauth.core.*;
-import com.github.phantauth.resource.Name;
 import com.github.phantauth.resource.Producer;
 import com.google.common.base.Preconditions;
 import com.nimbusds.jwt.JWT;
@@ -20,6 +19,7 @@ public class UserTokenFactory extends AbstractTokenFactory<User> implements Prod
     private static final String ACCESS_TOKEN_HASH = "at_hash";
     private static final String CODE_HASH = "c_hash";
     private static final String AUTH_TIME = "auth_time";
+    private static final String EMPTY_STRING = "";
 
     @Inject
     public UserTokenFactory(final TokenManager tokenManager) {
@@ -34,7 +34,7 @@ public class UserTokenFactory extends AbstractTokenFactory<User> implements Prod
     @Override
     public String newSelfieToken(final User user) {
         Preconditions.checkNotNull(user);
-        final User nosub = new User.Builder().from(user).setSub(null).build();
+        final User nosub = new User.Builder().from(user).setSub(EMPTY_STRING).build();
         return newSelfieToken("user", nosub);
     }
 

@@ -5,12 +5,9 @@ import com.github.phantauth.core.Client;
 import com.github.phantauth.core.User;
 import com.github.phantauth.resource.Repository;
 import com.github.phantauth.resource.TenantRepository;
-;
 import com.github.phantauth.token.ClientTokenFactory;
 import com.github.phantauth.token.UserTokenFactory;
-import com.nimbusds.oauth2.sdk.AuthorizationRequest;
-import com.nimbusds.oauth2.sdk.Response;
-import com.nimbusds.oauth2.sdk.TokenRequest;
+import com.nimbusds.oauth2.sdk.*;
 import com.nimbusds.openid.connect.sdk.*;
 
 import javax.inject.Inject;
@@ -37,6 +34,11 @@ public class ImplicitFlow extends AbstractFlow {
     @Override
     Response handle(final AuthorizationRequest request) {
         return handle((AuthenticationRequest)request);
+    }
+
+    @Override
+    Response handle(final TokenRequest request) {
+        return new TokenErrorResponse(OAuth2Error.UNSUPPORTED_GRANT_TYPE);
     }
 
     Response handle(final AuthenticationRequest request) {

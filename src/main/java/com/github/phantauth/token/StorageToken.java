@@ -16,7 +16,7 @@ import javax.annotation.Nullable;
 @JsonDeserialize(builder = StorageToken.Builder.class)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public interface StorageToken {
-    class Builder extends StorageTokenValue.Builder {
+    class Builder extends StorageTokenValue.BuilderBase {
 
         public static StorageToken of(final Tenant tenant, final StorageToken from, final TokenKind kind) {
             final Builder builder = new Builder().from(from).setTokenKind(kind);

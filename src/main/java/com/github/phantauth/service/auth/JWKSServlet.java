@@ -23,12 +23,12 @@ public class JWKSServlet extends AbstractServlet {
     }
 
     @Override
-    protected HTTPResponse doGet(HTTPRequest req) {
+    protected HTTPResponse handleGet(HTTPRequest req) {
         return Response.json(tokenManager.getPublicKeySet().toJSONObject(true));
     }
 
     @Override
-    protected HTTPResponse doPost(HTTPRequest req) {
+    protected HTTPResponse handlePost(HTTPRequest req) {
         throw new RequestMethodException(req.getMethod().name());
     }
 }

@@ -9,14 +9,15 @@ import org.minidns.record.TXT;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Set;
-import java.util.StringTokenizer;
 import java.util.function.Function;
 
 @Module
 public class DNSModule {
+
+    private DNSModule() {
+        // no instances
+    }
 
     @Provides @Singleton @Named("txtResolver")
     static Function<String, Set<String>> provideTxtResolver() {

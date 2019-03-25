@@ -12,6 +12,6 @@ import org.immutables.value.Value;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public interface Fleet extends Group<Client> {
 
-    class Builder extends FleetValue.Builder {
+    class Builder extends FleetValue.BuilderBase {
     }
 }

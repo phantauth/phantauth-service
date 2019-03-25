@@ -45,7 +45,7 @@ interface AuthTokens {
         return builder.build();
     }
 
-    class Builder extends AuthTokensValue.Builder {
+    class Builder extends AuthTokensValue.BuilderBase {
 
     }
 }

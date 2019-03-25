@@ -6,10 +6,9 @@ import com.github.phantauth.flow.AuthorizationFlow;
 import com.github.phantauth.resource.Repository;
 import com.github.phantauth.resource.TenantRepository;
 import com.github.phantauth.resource.Endpoint;
-import com.github.phantauth.service.Request;
+import com.github.phantauth.service.Param;
 import com.github.phantauth.service.TemplateManager;
 import com.github.phantauth.token.TenantTokenFactory;
-import com.nimbusds.openid.connect.sdk.op.OIDCProviderMetadata;
 import org.apache.commons.lang3.tuple.Pair;
 
 import javax.inject.Inject;
@@ -29,7 +28,7 @@ public class TenantServlet extends ResourceServlet<Tenant> {
     }
 
     @Override
-    protected Pair[] getTemplateParams(final Tenant tenant, final Request.Param param) {
+    protected Pair[] getTemplateParams(final Tenant tenant, final Param param) {
         final boolean isDomain = tenant.isDomain();
         final Pair[] orig = super.getTemplateParams(tenant, param);
         final Pair[] pairs = new Pair[orig.length + (isDomain ? 2 : 1)];

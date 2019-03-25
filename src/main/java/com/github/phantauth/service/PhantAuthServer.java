@@ -7,7 +7,6 @@ import org.eclipse.jetty.rewrite.handler.RewritePatternRule;
 import org.eclipse.jetty.rewrite.handler.RewriteRegexRule;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.RequestLogHandler;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -34,26 +33,41 @@ public class PhantAuthServer extends Server {
     PhantAuthServer(@Named("port") final int port, @Named("serviceURI") final URI serviceURI, @Named("defaultTenantURI") final URI defaultTenantURI, final Set<AbstractServlet> servlets) {
         super(port);
 
-        final HttpConfiguration httpConfig = new HttpConfiguration();
-        httpConfig.setSendServerVersion(false);
-        final HttpConnectionFactory httpFactory = new HttpConnectionFactory(httpConfig);
-        final ServerConnector httpConnector = new ServerConnector(this, httpFactory);
-        httpConnector.setPort(port);
-        setConnectors(new Connector[]{httpConnector});
+        for(Connector connector : getConnectors()) {
+            for(ConnectionFactory factory  : connector.getConnectionFactories()) {
+                if(factory instanceof HttpConnectionFactory) {
+                    ((HttpConnectionFactory)factory).getHttpConfiguration().setSendServerVersion(false);
+                }
+            }
+        }
 
+        final ServletContextHandler servletContextHandler = newServletContextHandler(servlets);
+        final ResourceHandler resHandler = newResourceHandler(servletContextHandler);
+        final RewriteHandler rewriteHandler = newRewriteHandler(resHandler, serviceURI, defaultTenantURI);
+
+        setHandler(new HandlerList(rewriteHandler, resHandler, servletContextHandler));
+    }
+
+    private ServletContextHandler newServletContextHandler(final Set<AbstractServlet> servlets) {
         final ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
         servletContextHandler.setContextPath("/");
         servletContextHandler.addFilter(new FilterHolder(new CrossOriginFilter()), "/*", EnumSet.of(DispatcherType.REQUEST));
         servletContextHandler.addFilter(new FilterHolder(new NoCacheFilter()), "/auth/*", EnumSet.of(DispatcherType.REQUEST));
         addServlets(servletContextHandler, servlets);
+        return servletContextHandler;
+    }
 
+    private ResourceHandler newResourceHandler(final Handler baseHandler) {
         final ResourceHandler resHandler = new ResourceHandler();
         resHandler.setDirAllowed(false);
         resHandler.setBaseResource(Resource.newClassPathResource("/docroot/"));
-        resHandler.setHandler(servletContextHandler);
+        resHandler.setHandler(baseHandler);
+        return resHandler;
+    }
 
+    private RewriteHandler newRewriteHandler(final Handler baseHandler, final URI serviceURI, final URI defaultTenantURI) {
         final RewriteHandler rewriteHandler = new RewriteHandler();
-        rewriteHandler.setHandler(resHandler);
+        rewriteHandler.setHandler(baseHandler);
 
         final RedirectPatternRule faviconRule = new RedirectPatternRule("*favicon.ico", defaultTenantURI + "/logo/phantauth-favicon.png");
         faviconRule.setTerminating(true);
@@ -74,7 +88,7 @@ public class PhantAuthServer extends Server {
         final RewritePatternRule indexRule = new RewritePatternRule("", Endpoint.INDEX.getPath());
         rewriteHandler.addRule(indexRule);
 
-        setHandler(new HandlerList(rewriteHandler, resHandler, servletContextHandler));
+        return rewriteHandler;
     }
 
     private void addServlets(final ServletContextHandler handler, final Set<AbstractServlet> servlets) {

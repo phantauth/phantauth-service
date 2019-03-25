@@ -12,6 +12,6 @@ import org.immutables.value.Value;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public interface Team extends Group<User> {
 
-    class Builder extends TeamValue.Builder {
+    class Builder extends TeamValue.BuilderBase {
     }
 }

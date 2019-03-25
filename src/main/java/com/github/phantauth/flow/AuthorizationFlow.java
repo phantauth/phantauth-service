@@ -149,9 +149,30 @@ public class AuthorizationFlow {
                 ClientAuthenticationMethod.PRIVATE_KEY_JWT));
     }
 
-    class DefaultFlow extends AbstractFlow {
+    static class DefaultFlow extends AbstractFlow {
         DefaultFlow() {
             super(null, null, null, null, null);
         }
+
+        @Override
+        boolean implied(final AuthorizationRequest request) {
+            return false;
+        }
+
+        @Override
+        boolean implied(final TokenRequest request) {
+            return false;
+        }
+
+        @Override
+        Response handle(final AuthorizationRequest request) {
+            return new AuthorizationErrorResponse(request.getRedirectionURI(), OAuth2Error.UNSUPPORTED_RESPONSE_TYPE, request.getState(), request.getResponseMode());
+        }
+
+        @Override
+        Response handle(final TokenRequest request) {
+            return new TokenErrorResponse(OAuth2Error.UNSUPPORTED_GRANT_TYPE);
+        }
+
     }
 }

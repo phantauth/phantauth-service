@@ -9,6 +9,7 @@ import com.github.phantauth.resource.producer.faker.ClientFaker;
 import com.github.phantauth.resource.producer.faker.UserFaker;
 import com.github.phantauth.service.PhantAuthComponent;
 import com.github.phantauth.service.ServiceModule;
+import com.github.phantauth.service.TemplateManager;
 import com.github.phantauth.service.auth.AuthModule;
 import com.github.phantauth.service.rest.RestModule;
 import com.github.phantauth.token.ClientTokenFactory;
@@ -27,6 +28,7 @@ public interface TestComponent extends PhantAuthComponent  {
     ClientTokenFactory getClientTokenFactory();
     UserTokenFactory getUserTokenFactory();
     AuthorizationFlow getAuthorizationFlow();
+    TemplateManager getTemplateManager();
     class Holder {
         public static TestComponent instance;
         public static void init() {

@@ -29,7 +29,7 @@ public abstract class Config {
     private static final String DEFAULT_TTL = String.valueOf(TimeUnit.HOURS.toSeconds(1));
     private static final String DEFAULT_TENANT_DOMAIN = "phantauth.cf";
 
-    public static class Builder extends ConfigValue.Builder {
+    public static class Builder extends ConfigValue.BuilderBase {
     }
 
     @Value.Default

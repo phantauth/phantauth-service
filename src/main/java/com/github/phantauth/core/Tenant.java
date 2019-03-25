@@ -16,111 +16,90 @@ import java.util.List;
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public interface Tenant {
 
-    String SUB = "sub";
-    @JsonProperty(SUB)
+    @JsonProperty(Property.SUB)
     @JsonView(Views.Phantom.class)
     String getSub();
 
-    String ISSUER = "issuer";
-    @JsonProperty(ISSUER)
+    @JsonProperty(Property.ISSUER)
     @JsonView(Views.Phantom.class)
     String getIssuer();
 
-    String WEBSITE = "website";
-    @JsonProperty(WEBSITE)
+    @JsonProperty(Property.WEBSITE)
     @JsonView({Views.Phantom.class, Views.Config.class})
     String getWebsite();
 
-    String TEMPLATE = "template";
-    @JsonProperty(TEMPLATE)
+    @JsonProperty(Property.TEMPLATE)
     @JsonView({Views.Phantom.class, Views.Config.class})
     String getTemplate();
 
-    String FACTORY = "factory";
-    @JsonProperty(FACTORY)
+    @JsonProperty(Property.FACTORY)
     @JsonView({Views.Phantom.class, Views.Config.class})
     String getFactory();
 
-    String FACTORIES = "factories";
-    @JsonProperty(FACTORIES)
+    @JsonProperty(Property.FACTORIES)
     @JsonView({Views.Phantom.class, Views.Config.class})
     List<String> getFactories();
 
-    String DEPOT = "depot";
-    @JsonProperty(DEPOT)
+    @JsonProperty(Property.DEPOT)
     @JsonView({Views.Phantom.class, Views.Config.class})
     String getDepot();
 
-    String DEPOTS = "depots";
-    @JsonProperty(DEPOTS)
+    @JsonProperty(Property.DEPOTS)
     @JsonView({Views.Phantom.class, Views.Config.class})
     List<String> getDepots();
 
-    String USERINFO = "userinfo";
-    @JsonProperty(USERINFO)
+    @JsonProperty(Property.USERINFO)
     @JsonView({Views.Phantom.class, Views.Config.class})
     String getUserinfo();
 
-    String ID="@id";
-    @JsonProperty(ID)
+    @JsonProperty(Property.ID)
     @JsonView(Views.Meta.class)
     String getId();
 
-    String NAME = "name";
-    @JsonProperty(NAME)
+    @JsonProperty(Property.NAME)
     @JsonView({Views.Phantom.class, Views.Config.class})
     String getName();
 
-    String FLAGS = "flags";
-    @JsonProperty(FLAGS)
+    @JsonProperty(Property.FLAGS)
     @JsonView({Views.Phantom.class, Views.Config.class})
     String getFlags();
 
-    String LOGO = "logo";
-    @JsonProperty(LOGO)
+    @JsonProperty(Property.LOGO)
     @JsonView({Views.Phantom.class, Views.Config.class})
     String getLogo();
 
-    String THEME = "theme";
-    @JsonProperty(THEME)
+    @JsonProperty(Property.THEME)
     @JsonView({Views.Phantom.class,Views.Config.class})
     String getTheme();
 
-    String SCRIPT = "script";
-    @JsonProperty(SCRIPT)
+    @JsonProperty(Property.SCRIPT)
     @JsonView({Views.Phantom.class,Views.Config.class})
     String getScript();
 
-    String SHEET = "sheet";
-    @JsonProperty(SHEET)
+    @JsonProperty(Property.SHEET)
     @JsonView(Views.Config.class)
     String getSheet();
 
-    String SUMMARY = "summary";
-    @JsonProperty(SUMMARY)
+    @JsonProperty(Property.SUMMARY)
     @JsonView(Views.Phantom.class)
     String getSummary();
 
-    String ATTRIBUTION = "attribution";
-    @JsonProperty(ATTRIBUTION)
+    @JsonProperty(Property.ATTRIBUTION)
     @JsonView(Views.Phantom.class)
     String getAttribution();
 
-    String ABOUT = "about";
-    @JsonProperty(ABOUT)
+    @JsonProperty(Property.ABOUT)
     @JsonView(Views.Phantom.class)
     String getAbout();
 
-    String DOMAIN = "domain";
-    @JsonProperty(DOMAIN)
+    @JsonProperty(Property.DOMAIN)
     @JsonView(Views.Phantom.class)
     boolean isDomain();
 
-    String SUBTENANT = "subtenant";
-    @JsonProperty(SUBTENANT)
+    @JsonProperty(Property.SUBTENANT)
     @JsonView(Views.Phantom.class)
     boolean isSubtenant();
 
-    class Builder extends TenantValue.Builder {
+    class Builder extends TenantValue.BuilderBase {
     }
 }

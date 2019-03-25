@@ -15,7 +15,7 @@ import javax.inject.Named;
 public class UserDepot extends AbstractDepot<User> {
     @Inject
     public UserDepot(@Named("ttl") final long cacheTTL) {
-        super(User.class, user -> user.getSub(), cacheTTL, UserFlat.class);
+        super(User.class, User::getSub, cacheTTL, UserFlat.class);
     }
 
     @Override

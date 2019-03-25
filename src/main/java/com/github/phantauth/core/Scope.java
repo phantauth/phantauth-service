@@ -40,8 +40,6 @@ public enum Scope {
      */
     UID("uid", Claim.UID);
 
-    public static Scope[] DEFAULT_SCOPES = Scope.values();
-
     private final String name;
     private final Claim[] claims;
 
@@ -57,6 +55,10 @@ public enum Scope {
 
     public Claim[] getClaims() {
         return claims;
+    }
+
+    public static Scope[] getDefaultScopes() {
+        return Scope.values();
     }
 
     @SuppressWarnings("WeakerAccess")

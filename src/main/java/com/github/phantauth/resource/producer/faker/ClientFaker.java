@@ -9,7 +9,6 @@ import com.github.phantauth.resource.Flags;
 import com.github.phantauth.resource.Name;
 import com.github.phantauth.resource.producer.FakeName;
 import com.github.phantauth.resource.producer.Hashes;
-import com.google.common.io.BaseEncoding;
 import com.google.common.net.UrlEscapers;
 import com.google.common.primitives.Longs;
 import org.apache.commons.text.WordUtils;
@@ -17,12 +16,14 @@ import org.apache.commons.text.WordUtils;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 import javax.inject.Inject;
+import java.util.Base64;
 import java.util.Random;
 
 public class ClientFaker extends AbstractFaker<Client> {
 
     @Inject
     public ClientFaker() {
+        // just for Inject annotation
     }
 
     @Override
@@ -44,10 +45,9 @@ public class ClientFaker extends AbstractFaker<Client> {
         private static final String PROFILE_FORMAT = "%s/profile";
 
         private static String newSubject() {
-            return new StringBuilder(AbstractFaker.faker.app().name())
-                    .append(Name.INSTANCE_SEPARATOR)
-                    .append(BaseEncoding.base64Url().omitPadding().encode(Longs.toByteArray(AbstractFaker.faker.random().nextLong())))
-                    .toString();
+            return AbstractFaker.faker.app().name() +
+                    Name.INSTANCE_SEPARATOR +
+                    Base64.getUrlEncoder().withoutPadding().encodeToString(Longs.toByteArray(AbstractFaker.faker.random().nextLong()));
         }
 
         private ClientGen(final Tenant tenant, final Name clientId) {

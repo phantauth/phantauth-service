@@ -12,9 +12,9 @@ import com.github.phantauth.resource.Name;
 import com.github.phantauth.resource.Producer;
 import com.github.phantauth.resource.producer.AbstractExternalProducer;
 import com.github.phantauth.resource.producer.ExternalCache;
-import com.google.common.base.Strings;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
+import lombok.extern.flogger.Flogger;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -22,7 +22,8 @@ import java.util.*;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Function;
 
-public class AbstractDepot<T> extends AbstractExternalProducer<T> implements Producer<T> {
+@Flogger
+public abstract class AbstractDepot<T> extends AbstractExternalProducer<T> implements Producer<T> {
     private static final int CACHE_MAX_REPOSITORIES = 32;
     private static final int MAX_REPOSITORY_LINES = 512;
     private final CsvMapper mapper = (CsvMapper)new CsvMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
@@ -72,7 +73,7 @@ public class AbstractDepot<T> extends AbstractExternalProducer<T> implements Pro
         try {
             return list(tenant, expand(templateFrom(tenant.getDepot(), tenant.getDepots())), size.getLimit());
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            log.atWarning().withCause(e).log();
             throw new InvalidParameterException(tenant.getSub());
         }
     }
@@ -93,9 +94,7 @@ public class AbstractDepot<T> extends AbstractExternalProducer<T> implements Pro
         return name.isAuthorityEmpty() || ! map.containsKey(name.getSubject()) ? getMissing(map, name) : map.get(name.getSubject());
     }
 
-    protected T defaults(final Tenant tenant, final T value) {
-        return value;
-    }
+    protected abstract T defaults(final Tenant tenant, final T value);
 
     @Override
     public T get(final Tenant tenant, final Name name) {
@@ -110,7 +109,7 @@ public class AbstractDepot<T> extends AbstractExternalProducer<T> implements Pro
             final T value = get(expand(template, name), name);
             return value == null ? null : defaults(tenant, value);
         } catch (ExecutionException e) {
-            e.printStackTrace();
+            log.atWarning().withCause(e).log();
             throw new InvalidParameterException(tenant.getSub());
         }
     }

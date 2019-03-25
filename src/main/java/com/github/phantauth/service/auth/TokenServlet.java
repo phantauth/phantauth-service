@@ -41,7 +41,7 @@ public class TokenServlet extends AbstractServlet {
         this.flow = flow;
     }
 
-    protected HTTPResponse doGet(final HTTPRequest req) {
+    protected HTTPResponse handleGet(final HTTPRequest req) {
 
         final TokenRequest request;
 
@@ -56,7 +56,7 @@ public class TokenServlet extends AbstractServlet {
     }
 
     @Override
-    protected HTTPResponse doPost(final HTTPRequest req) {
-        return doGet(req);
+    protected HTTPResponse handlePost(final HTTPRequest req) {
+        return handleGet(req);
     }
 }

@@ -22,142 +22,8 @@ public abstract class Flags {
 
     public static final Flags EMPTY = Flags.Builder.parse(EMPTY_STRING);
 
-    @SuppressWarnings("unused")
-    public interface Flag {
-        default String format() {
-            return format(true);
-        }
-
-        boolean isDefault();
-
-        String name();
-
-        default StringBuilder append(final StringBuilder builder) {
-            if ( ! isDefault() ) {
-                if (builder.length() > 0) {
-                    builder.append(DELIMITER);
-                }
-                builder.append(name().toLowerCase());
-
-            }
-            return builder;
-        }
-
-        default String format(final boolean includeDefault) {
-            return includeDefault || ! isDefault() ? name().toLowerCase() : EMPTY_STRING;
-        }
-    }
-
-    public enum Mail implements Flag {
-        NOEMAIL, DETECT, PLUS, DOT;
-
-        public static final Mail DEFAULT = Mail.DETECT;
-
-        @Override public boolean isDefault() {
-            return this == DEFAULT;
-        }
-
-        static boolean parse(final String value, final Consumer<Mail> consumer) {
-            final Mail parsed = REVERSE.get(value);
-            if (parsed != null) {
-                consumer.accept(parsed);
-                return true;
-            }
-            return false;
-        }
-
-        private static final Map<String, Mail> REVERSE = Arrays.stream(Mail.values()).collect(Collectors.toMap(Mail::format, value -> value));
-    }
-
-    public enum Avatar implements Flag {
-        NOAVATAR, AI, SKETCH, PHOTO, DICE, KITTEN, ADORABLE, NOTFOUND, MP, IDENTICON, MONSTERID, WAVATAR, RETRO, ROBOHASH, BLANK;
-
-        public static final Avatar DEFAULT = Avatar.AI;
-
-        @Override public boolean isDefault() {
-            return this == DEFAULT;
-        }
-
-        static boolean parse(final String value, final Consumer<Avatar> consumer) {
-            final Avatar parsed = REVERSE.get(value);
-            if (parsed != null) {
-                consumer.accept(parsed);
-                return true;
-            }
-            return false;
-        }
-
-        private static final Map<String, Avatar> REVERSE = Arrays.stream(Avatar.values()).collect(Collectors.toMap(Avatar::format, value -> value));
-    }
-
-    public enum Logo implements Flag {
-        NOLOGO, ICON, FRACTAL;
-
-        static final Logo DEFAULT = Logo.ICON;
-
-        @Override public boolean isDefault() {
-            return this == DEFAULT;
-        }
-
-        static boolean parse(final String value, final Consumer<Logo> consumer) {
-            final Logo parsed = REVERSE.get(value);
-            if (parsed != null) {
-                consumer.accept(parsed);
-                return true;
-            }
-            return false;
-        }
-
-        private static final Map<String, Logo> REVERSE = Arrays.stream(Logo.values()).collect(Collectors.toMap(Logo::format, value -> value));
-    }
-
-    public enum Gender implements Flag {
-        NOGENDER, GUESS, MALE, FEMALE;
-
-        public static final Gender DEFAULT = Gender.GUESS;
-
-        @Override public boolean isDefault() {
-            return this == DEFAULT;
-        }
-
-        static boolean parse(final String value, final Consumer<Gender> consumer) {
-            final Gender parsed = REVERSE.get(value);
-            if (parsed != null) {
-                consumer.accept(parsed);
-                return true;
-            }
-            return false;
-        }
-
-        private static final Map<String, Gender> REVERSE = Arrays.stream(Gender.values()).collect(Collectors.toMap(Gender::format, value -> value));
-    }
-
-    public enum Size implements Flag {
-        TINY(5), SMALL(10), MEDIUM(25), LARGE(50), HUGE(100);
-
-        @Getter
-        private final int limit;
-
-        public static final Size DEFAULT = Size.TINY;
-
-        Size(final int limit) {
-            this.limit = limit;
-        }
-
-        @Override public boolean isDefault() {
-            return this == DEFAULT;
-        }
-
-        static boolean parse(final String value, final Consumer<Size> consumer) {
-            final Size parsed = REVERSE.get(value);
-            if (parsed != null) {
-                consumer.accept(parsed);
-                return true;
-            }
-            return false;
-        }
-
-        private static final Map<String, Size> REVERSE = Arrays.stream(Size.values()).collect(Collectors.toMap(Size::format, value -> value));
+    public static Flags parse(final String value) {
+        return Builder.parse(value);
     }
 
     @Value.Default
@@ -195,7 +61,7 @@ public abstract class Flags {
     }
 
     public String format(final boolean includeDefault) {
-        if ( isDefault() && ! includeDefault ) {
+        if (isDefault() && !includeDefault) {
             return EMPTY_STRING;
         }
 
@@ -224,11 +90,144 @@ public abstract class Flags {
         return getMail().isDefault() && getAvatar().isDefault() && getGender().isDefault() && getLocale() == Locale.US && getLogo().isDefault() && getSize().isDefault();
     }
 
-    public static Flags parse(final String value) {
-        return Builder.parse(value);
+    public enum Mail implements Flag {
+        NOEMAIL, DETECT, PLUS, DOT;
+
+        public static final Mail DEFAULT = Mail.DETECT;
+        private static final Map<String, Mail> REVERSE = Arrays.stream(Mail.values()).collect(Collectors.toMap(Mail::format, value -> value));
+
+        static boolean parse(final String value, final Consumer<Mail> consumer) {
+            final Mail parsed = REVERSE.get(value);
+            if (parsed != null) {
+                consumer.accept(parsed);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean isDefault() {
+            return this == DEFAULT;
+        }
     }
 
-    public static class Builder extends FlagsValue.Builder {
+    public enum Avatar implements Flag {
+        NOAVATAR, AI, SKETCH, PHOTO, DICE, KITTEN, ADORABLE, NOTFOUND, MP, IDENTICON, MONSTERID, WAVATAR, RETRO, ROBOHASH, BLANK;
+
+        public static final Avatar DEFAULT = Avatar.AI;
+        private static final Map<String, Avatar> REVERSE = Arrays.stream(Avatar.values()).collect(Collectors.toMap(Avatar::format, value -> value));
+
+        static boolean parse(final String value, final Consumer<Avatar> consumer) {
+            final Avatar parsed = REVERSE.get(value);
+            if (parsed != null) {
+                consumer.accept(parsed);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean isDefault() {
+            return this == DEFAULT;
+        }
+    }
+
+    public enum Logo implements Flag {
+        NOLOGO, ICON, FRACTAL;
+
+        static final Logo DEFAULT = Logo.ICON;
+        private static final Map<String, Logo> REVERSE = Arrays.stream(Logo.values()).collect(Collectors.toMap(Logo::format, value -> value));
+
+        static boolean parse(final String value, final Consumer<Logo> consumer) {
+            final Logo parsed = REVERSE.get(value);
+            if (parsed != null) {
+                consumer.accept(parsed);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean isDefault() {
+            return this == DEFAULT;
+        }
+    }
+
+    public enum Gender implements Flag {
+        NOGENDER, GUESS, MALE, FEMALE;
+
+        public static final Gender DEFAULT = Gender.GUESS;
+        private static final Map<String, Gender> REVERSE = Arrays.stream(Gender.values()).collect(Collectors.toMap(Gender::format, value -> value));
+
+        static boolean parse(final String value, final Consumer<Gender> consumer) {
+            final Gender parsed = REVERSE.get(value);
+            if (parsed != null) {
+                consumer.accept(parsed);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean isDefault() {
+            return this == DEFAULT;
+        }
+    }
+
+    public enum Size implements Flag {
+        TINY(5), SMALL(10), MEDIUM(25), LARGE(50), HUGE(100);
+
+        public static final Size DEFAULT = Size.TINY;
+        private static final Map<String, Size> REVERSE = Arrays.stream(Size.values()).collect(Collectors.toMap(Size::format, value -> value));
+        @Getter
+        private final int limit;
+
+        Size(final int limit) {
+            this.limit = limit;
+        }
+
+        static boolean parse(final String value, final Consumer<Size> consumer) {
+            final Size parsed = REVERSE.get(value);
+            if (parsed != null) {
+                consumer.accept(parsed);
+                return true;
+            }
+            return false;
+        }
+
+        @Override
+        public boolean isDefault() {
+            return this == DEFAULT;
+        }
+    }
+
+    @SuppressWarnings("unused")
+    public interface Flag {
+        default String format() {
+            return format(true);
+        }
+
+        boolean isDefault();
+
+        String name();
+
+        default StringBuilder append(final StringBuilder builder) {
+            if (!isDefault()) {
+                if (builder.length() > 0) {
+                    builder.append(DELIMITER);
+                }
+                builder.append(name().toLowerCase());
+
+            }
+            return builder;
+        }
+
+        default String format(final boolean includeDefault) {
+            return includeDefault || !isDefault() ? name().toLowerCase() : EMPTY_STRING;
+        }
+    }
+
+    public static class Builder extends FlagsValue.BuilderBase {
         private static final Map<String, Locale> LOCALES;
 
         static {
@@ -270,9 +269,7 @@ public abstract class Flags {
                     continue;
                 }
 
-                if ( Size.parse(token, builder::setSize) ) {
-                    continue;
-                }
+                Size.parse(token, builder::setSize);
             }
             return builder.build();
         }
