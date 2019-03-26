@@ -10,6 +10,7 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.eclipse.jetty.servlets.HeaderFilter;
 import org.eclipse.jetty.util.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,18 +41,24 @@ public class PhantAuthServer extends Server {
             }
         }
 
-        final ServletContextHandler servletContextHandler = newServletContextHandler(servlets);
+        final ServletContextHandler servletContextHandler = newServletContextHandler(servlets, serviceURI);
         final ResourceHandler resHandler = newResourceHandler(servletContextHandler);
         final RewriteHandler rewriteHandler = newRewriteHandler(resHandler, serviceURI, defaultTenantURI);
 
         setHandler(new HandlerList(rewriteHandler, resHandler, servletContextHandler));
     }
 
-    private ServletContextHandler newServletContextHandler(final Set<AbstractServlet> servlets) {
+    private ServletContextHandler newServletContextHandler(final Set<AbstractServlet> servlets, final URI serviceURI) {
         final ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
         servletContextHandler.setContextPath("/");
         servletContextHandler.addFilter(new FilterHolder(new CrossOriginFilter()), "/*", EnumSet.of(DispatcherType.REQUEST));
         servletContextHandler.addFilter(new FilterHolder(new NoCacheFilter()), "/auth/*", EnumSet.of(DispatcherType.REQUEST));
+        final FilterHolder holder = new FilterHolder(new HeaderFilter());
+
+        if ( ! serviceURI.toString().endsWith(Config.DEFAULT_DOMAIN) ) {
+            holder.setInitParameter("headerConfig", "\"set X-Robots-Tag: noindex, nofollow\"");
+        }
+        servletContextHandler.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
         addServlets(servletContextHandler, servlets);
         return servletContextHandler;
     }
