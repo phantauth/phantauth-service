@@ -1,0 +1,36 @@
+{
+  "addons": [
+
+  ],
+  "buildpacks": [
+    {
+      "url": "heroku/gradle"
+    }
+  ],
+  "env": {
+    "PHANTAUTH_DEFAULT_TENANT_URI": {
+      "required": true
+    },
+    "PHANTAUTH_DEVELOPER_PORTAL_URI": {
+      "required": true
+    },
+    "PHANTAUTH_SERVICE_KEYS": {
+      "required": true
+    },
+    "PHANTAUTH_SERVICE_URI": {
+      "required": true
+    },
+    "PHANTAUTH_TTL": {
+      "required": true
+    }
+  },
+  "formation": {
+    "web": {
+      "quantity": 1
+    }
+  },
+  "name": "phantauth-service",
+  "scripts": {
+  },
+  "stack": "heroku-18"
+}
