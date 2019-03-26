@@ -6,7 +6,7 @@
 <body>
   <script type="text/javascript">
      if ( ! document.querySelector("base") ) {
-         document.location.replace("https://phantauth.me/!" + document.location.hostname);
+         document.location.replace("https://phantauth.net/_" + document.location.hostname);
      }
   </script>
   <nav th:replace="layout :: navbar('')"></nav>
@@ -39,7 +39,7 @@
       Just type your <em>client_id</em> in the input box bellow and press <em>generate</em>. You will see your <em>client_secret</em> next to the <em>client_id</em>.
       The generated logo and software name will displayed too. Leaving empty the <em>client_id</em> field, you can generate random <em>client_id</em> and
       <em>client_secret</em>.
-      <br/>Check <a href="https://developer.phantauth.me">PhantAuth Developer Portal for more information.</a>
+      <br/>Check <a href="https://www.phantauth.net">PhantAuth Developer Portal for more information.</a>
     </p>
     <form id="generator">
       <div class="form-row">

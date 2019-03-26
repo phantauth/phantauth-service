@@ -1,6 +1,7 @@
 package com.github.phantauth.resource.producer;
 
 import com.devskiller.jfairy.Fairy;
+import com.github.phantauth.config.Config;
 import com.github.phantauth.core.Tenant;
 import com.github.phantauth.resource.Endpoint;
 import com.github.phantauth.resource.Flags;
@@ -26,7 +27,7 @@ public class FakeName extends Name {
 
     private static final int PASSWORD_LENGTH = 8;
     private static final Set<String> DOT_DOMAINS = ImmutableSet.of(DEFAULT_MAIL_DOMAIN);
-    private static final Set<String> PLUS_DOMAINS = ImmutableSet.of("gmail.com", "outlook.com", "outlook.hu", "zoho.com", "protonmail.com", "phantauth.me");
+    private static final Set<String> PLUS_DOMAINS = ImmutableSet.of("gmail.com", "outlook.com", "outlook.hu", "zoho.com", "protonmail.com", Config.DEFAULT_DOMAIN);
     private static final int HASHIDS_MIN_LENGTH = 8;
     private static final String DEFAULT_MAIL_TAG = "phantauth";
 

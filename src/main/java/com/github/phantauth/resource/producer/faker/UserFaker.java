@@ -3,6 +3,7 @@ package com.github.phantauth.resource.producer.faker;
 import com.devskiller.jfairy.producer.person.Country;
 import com.devskiller.jfairy.producer.person.Person;
 import com.devskiller.jfairy.producer.person.PersonProperties;
+import com.github.phantauth.config.Config;
 import com.github.phantauth.core.Address;
 import com.github.phantauth.core.User;
 import com.github.phantauth.core.Tenant;
@@ -67,15 +68,15 @@ public class UserFaker extends AbstractFaker<User> {
 
         private static final Pattern HAS_FULL_NAME = Pattern.compile("^~?\\p{L}+[ .]\\p{L}+([ .]\\p{L}+)?$");
         private static final String PICTURE_FORMAT = "https://www.gravatar.com/avatar/%s?s=256&d=%s";
-        private static final String PICTURE_AI_FORMAT = "https://avatars.phantauth.me/ai/%s/%s.jpg";
+        private static final String PICTURE_AI_FORMAT = "https://avatars." + Config.DEFAULT_DOMAIN + "/ai/%s/%s.jpg";
         private static final int PICTURE_AI_MAX = 3299;
-        private static final String PICTURE_PHOTO_FORMAT = "https://avatars.phantauth.me/photo/%s/%s.jpg";
+        private static final String PICTURE_PHOTO_FORMAT = "https://avatars." + Config.DEFAULT_DOMAIN + "/photo/%s/%s.jpg";
         private static final int PICTURE_PHOTO_MAX = 299;
-        private static final String PICTURE_DICE_FORMAT = "https://avatars.phantauth.me/dice/%s/%s.png";
+        private static final String PICTURE_DICE_FORMAT = "https://avatars." + Config.DEFAULT_DOMAIN + "/dice/%s/%s.png";
         private static final int PICTURE_DICE_MAX = 299;
-        private static final String PICTURE_SKETCH_FORMAT = "https://avatars.phantauth.me/sketch/%s/%s.jpg";
+        private static final String PICTURE_SKETCH_FORMAT = "https://avatars." + Config.DEFAULT_DOMAIN + "/sketch/%s/%s.jpg";
         private static final int PICTURE_SKETCH_MAX = 999;
-        private static final String PICTURE_KITTEN_FORMAT = "https://avatars.phantauth.me/kitten/%s.jpg";
+        private static final String PICTURE_KITTEN_FORMAT = "https://avatars." + Config.DEFAULT_DOMAIN + "/kitten/%s.jpg";
         private static final int PICTURE_KITTEN_MAX = 299;
         private static final String PICTURE_ADORABLE_FORMAT = "https://api.adorable.io/avatars/256/%s.png";
 

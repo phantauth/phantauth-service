@@ -1,6 +1,7 @@
 package com.github.phantauth.resource.producer.faker;
 
 import com.github.javafaker.Faker;
+import com.github.phantauth.config.Config;
 import com.github.phantauth.core.Client;
 import com.github.phantauth.core.ClientBean;
 import com.github.phantauth.core.Tenant;
@@ -34,9 +35,9 @@ public class ClientFaker extends AbstractFaker<Client> {
 
     static class ClientGen extends ClientBean {
 
-        private static final String LOGO_ICON_FORMAT = "https://avatars.phantauth.me/icon/%s.png";
+        private static final String LOGO_ICON_FORMAT = "https://avatars." + Config.DEFAULT_DOMAIN + "/icon/%s.png";
         private static final int LOGO_ICON_MAX = 4099;
-        private static final String LOGO_FRACTAL_FORMAT = "https://avatars.phantauth.me/fractal/%s.jpg";
+        private static final String LOGO_FRACTAL_FORMAT = "https://avatars." + Config.DEFAULT_DOMAIN + "/fractal/%s.jpg";
         private static final int LOGO_FRACTAL_MAX = 1400;
         private static final String PICTURE_FORMAT = "https://www.gravatar.com/avatar/%s?s=256&d=%s";
         private static final String VERSION_PATTERN = "#.#.#";

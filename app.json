@@ -8,16 +8,10 @@
     }
   ],
   "env": {
-    "PHANTAUTH_DEFAULT_TENANT_URI": {
-      "required": true
-    },
-    "PHANTAUTH_DEVELOPER_PORTAL_URI": {
-      "required": true
-    },
     "PHANTAUTH_SERVICE_KEYS": {
       "required": true
     },
-    "PHANTAUTH_SERVICE_URI": {
+    "PHANTAUTH_DOMAIN": {
       "required": true
     },
     "PHANTAUTH_TTL": {
