@@ -1,10 +1,8 @@
 package com.github.phantauth.service;
 
+import com.github.phantauth.config.Config;
 import com.github.phantauth.resource.Endpoint;
-import org.eclipse.jetty.rewrite.handler.RedirectPatternRule;
-import org.eclipse.jetty.rewrite.handler.RewriteHandler;
-import org.eclipse.jetty.rewrite.handler.RewritePatternRule;
-import org.eclipse.jetty.rewrite.handler.RewriteRegexRule;
+import org.eclipse.jetty.rewrite.handler.*;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
@@ -12,6 +10,7 @@ import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
+import org.eclipse.jetty.servlets.HeaderFilter;
 import org.eclipse.jetty.util.resource.Resource;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -20,6 +19,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.DispatcherType;
+import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.util.EnumSet;
 import java.util.Set;
@@ -41,18 +41,24 @@ public class PhantAuthServer extends Server {
             }
         }
 
-        final ServletContextHandler servletContextHandler = newServletContextHandler(servlets);
+        final ServletContextHandler servletContextHandler = newServletContextHandler(servlets, serviceURI);
         final ResourceHandler resHandler = newResourceHandler(servletContextHandler);
         final RewriteHandler rewriteHandler = newRewriteHandler(resHandler, serviceURI, defaultTenantURI);
 
         setHandler(new HandlerList(rewriteHandler, resHandler, servletContextHandler));
     }
 
-    private ServletContextHandler newServletContextHandler(final Set<AbstractServlet> servlets) {
+    private ServletContextHandler newServletContextHandler(final Set<AbstractServlet> servlets, final URI serviceURI) {
         final ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
         servletContextHandler.setContextPath("/");
         servletContextHandler.addFilter(new FilterHolder(new CrossOriginFilter()), "/*", EnumSet.of(DispatcherType.REQUEST));
         servletContextHandler.addFilter(new FilterHolder(new NoCacheFilter()), "/auth/*", EnumSet.of(DispatcherType.REQUEST));
+        final FilterHolder holder = new FilterHolder(new HeaderFilter());
+
+        if ( ! serviceURI.toString().endsWith(Config.DEFAULT_DOMAIN) ) {
+            holder.setInitParameter("headerConfig", "\"set X-Robots-Tag: noindex, nofollow\"");
+        }
+        servletContextHandler.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
         addServlets(servletContextHandler, servlets);
         return servletContextHandler;
     }
@@ -87,6 +93,11 @@ public class PhantAuthServer extends Server {
 
         final RewritePatternRule indexRule = new RewritePatternRule("", Endpoint.INDEX.getPath());
         rewriteHandler.addRule(indexRule);
+
+        if ( serviceURI.toString().endsWith(Config.DEFAULT_DOMAIN) ) {
+            final ResponsePatternRule robotsRule = new ResponsePatternRule("/robots.txt", String.valueOf(HttpServletResponse.SC_NOT_FOUND), "Not Found");
+            rewriteHandler.addRule(robotsRule);
+        }
 
         return rewriteHandler;
     }

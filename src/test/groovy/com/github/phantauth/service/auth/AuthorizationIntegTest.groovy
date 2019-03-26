@@ -1,5 +1,6 @@
 package com.github.phantauth.service.auth
 
+import com.github.phantauth.config.Config
 import com.github.phantauth.core.Claim
 
 import com.github.phantauth.core.Tenant
@@ -524,7 +525,7 @@ class AuthorizationIntegTest extends Specification {
 
         ResponseType responseType = new ResponseType("id")
         Scope scope = new Scope("indieauth")
-        ClientID clientId = new ClientID("https://phantauth.me/client?super.tool")
+        ClientID clientId = new ClientID("https://" + Config.DEFAULT_DOMAIN + "/client?super.tool")
 
         AuthorizationRequest authorizationRequest = new AuthorizationRequest.Builder(responseType, clientId)
                 .state(state)
@@ -581,7 +582,7 @@ class AuthorizationIntegTest extends Specification {
 
         ResponseType responseType = new ResponseType("id")
         Scope scope = new Scope("indieauth")
-        ClientID clientId = new ClientID("https://phantauth.me/client?super.tool")
+        ClientID clientId = new ClientID("https://" + Config.DEFAULT_DOMAIN + "/client?super.tool")
 
         AuthorizationRequest authorizationRequest = new AuthorizationRequest.Builder(responseType, clientId)
                 .state(state)

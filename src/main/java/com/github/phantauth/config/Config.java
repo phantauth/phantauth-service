@@ -20,10 +20,12 @@ public abstract class Config {
     private static final String ENV_SERVICE_KEYS = "PHANTAUTH_SERVICE_KEYS";
     private static final String ENV_TTL = "PHANTAUTH_TTL";
     private static final String ENV_TENANT_DOMAIN = "PHANTAUTH_TENANT_DOMAIN";
+    private static final String ENV_DOMAIN = "PHANTAUTH_DOMAIN";
 
-    private static final String DEFAULT_SERVICE_URI = "https://phantauth.me";
-    private static final String DEFAULT_DEFAULT_TENANT_URI = "https://default.phantauth.me";
-    private static final String DEFAULT_DEVELOPER_PORTAL_URI = "https://www.phantauth.me";
+    public static final String DEFAULT_DOMAIN = "phantauth.net";
+    private static final String DEFAULT_SERVICE_URI = "https://%s";
+    private static final String DEFAULT_DEFAULT_TENANT_URI = "https://default.%s";
+    private static final String DEFAULT_DEVELOPER_PORTAL_URI = "https://www.%s";
     private static final String DEFAULT_PORT = "8080";
     private static final String DEFAULT_SERVICE_KEYS = "eyJhbGciOiJub25lIn0K.eyJrZXlzIjpbeyJrdHkiOiJvY3QiLCJ1c2UiOiJzaWciLCJraWQiOiJodHRwczovL2V4YW1wbGUuY29tL2ZIMXBvcTdVRWVpUDJIZDA0aG9IN0EiLCJrIjoibmZMbXVtd25nRUtYajNlNk1fV1lBUmFkcGJkS0VJMGdVRGFfMUN4Mzl6WSIsImFsZyI6IkhTMjU2In0seyJrdHkiOiJvY3QiLCJ1c2UiOiJlbmMiLCJraWQiOiJodHRwczovL2V4YW1wbGUuY29tL2tBZXBWcTdVRWVpVzQ2Y2tVTkxDU3ciLCJrIjoiZVhiN3ltVHBvSTJzUUxVS1NKQUZJeVFYSU5HWThPaTFZX2drZk8tQ1NJYyIsImFsZyI6IkhTMjU2In0seyJrdHkiOiJSU0EiLCJkIjoiRm5TQ1ZBWUNtN0dqU2xKSGM1VHlYRVZRN3g4S2U3SjZFNU5qdFVYMUZPQS1MNWhzX0NFMTFrVmNJLVlTZndDY2U5MVVlSjZLTHpCUDd3SkVwM2VodjN6TThLTjFpQmNrM21oclBuajZBeUtzblV2VW85aVNUbjVwYWJYZ3V5d0RlYm5xZlYtaTA1RGdDLVU2WWdLRDNFRVBsckFzU2Q5bGY4Mmh2SFM0SUUxQ3JfVktwNFVVdkM0Q292R1E4S1dJZmgxUnlOZUEtNWxFZ3h1R1QteDhuRFZINmUtclctakd1X2tiaU5EVEM5T2lTVTl3SUV4enNjdWhwLVlHd0tYand5V3MtMmJ4TEkxLUJCanhvNG13MWpaZ05FU3VhY2lXaENSQUJ4TGNzTHhteVAweUFDaUEtWHVvSU9NcmZqM0F6d2dvUXBSVlJQczlFZXNFdHJKaXNRIiwiZSI6IkFRQUIiLCJ1c2UiOiJzaWciLCJraWQiOiJodHRwczovL2V4YW1wbGUuY29tL21jc2FhSzdVRWVpRE5SdjlQY1h6dlEiLCJhbGciOiJSUzI1NiIsIm4iOiJ0TXFQYlZSZUpxQzlFdXRNaTBXQWVvU0E5UTREbThUTl95cGZILUVncThHelFnQWs0RjRvdmc1cXQzdmNic3pvM2plZER0QW9yX0hpQ2VHc0JXc1h2NHVtV2RVcnc0TWN1eHBZQml2TEN0Y2JqSWZzWFlHajR0WmJsYzNCNDNlWGhDSFl1b0FSdG1ZQ3FuOUJBNHowQXF1MXhWN1I1WEpVdzFaNDFRM2JMRlROZHNvelJSbmY1aEhWcFZEQ3BZcDBWRTFJSTlXZExZZ0pXQS13M2tkbjlrbHNpcUpRWHEwRkl0YzNqaTU0eVNuanI0RFdwQVl4VkpUSFdrTWVIa2ZDQW5ES2hNQmhsRUlYUHlDcEUyb01UZ3lOQ2ExY2c3OGFpSUhOUXNYcFVrNzROYWhBdkVWcVJMc2F1SnFXdlBTQ3I3TGQwVnh4T2xYU3pxM1BmMTFVMlEifV19Cg.";
     private static final String DEFAULT_TTL = String.valueOf(TimeUnit.HOURS.toSeconds(1));
@@ -33,8 +35,13 @@ public abstract class Config {
     }
 
     @Value.Default
+    public String getDomain() {
+        return getenv(ENV_DOMAIN, DEFAULT_DOMAIN);
+    }
+
+    @Value.Default
     public String getDefaultTenantURI() {
-        return getenv(ENV_DEFAULT_TENANT_URI, DEFAULT_DEFAULT_TENANT_URI);
+        return getenv(ENV_DEFAULT_TENANT_URI, DEFAULT_DEFAULT_TENANT_URI, getDomain());
     }
 
     @Value.Default
@@ -44,12 +51,12 @@ public abstract class Config {
 
     @Value.Default
     public String getDeveloperPortalURI() {
-        return getenv(ENV_DEVELOPER_PORTAL_URI, DEFAULT_DEVELOPER_PORTAL_URI);
+        return getenv(ENV_DEVELOPER_PORTAL_URI, DEFAULT_DEVELOPER_PORTAL_URI, getDomain());
     }
 
     @Value.Default
     public String getServiceURI() {
-        return getenv(ENV_SERVICE_URI, DEFAULT_SERVICE_URI);
+        return getenv(ENV_SERVICE_URI, DEFAULT_SERVICE_URI, getDomain());
     }
 
     @Value.Default
@@ -75,5 +82,9 @@ public abstract class Config {
 
     private String getenv(final String name, final String defaultValue) {
         return System.getenv(name) == null ? defaultValue : System.getenv(name);
+    }
+
+    private String getenv(final String name, final String defaultValueFormat, final String defaultValueArg) {
+        return System.getenv(name) == null ? String.format(defaultValueFormat, defaultValueArg) : System.getenv(name);
     }
 }
