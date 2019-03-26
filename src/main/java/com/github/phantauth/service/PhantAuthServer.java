@@ -1,10 +1,8 @@
 package com.github.phantauth.service;
 
+import com.github.phantauth.config.Config;
 import com.github.phantauth.resource.Endpoint;
-import org.eclipse.jetty.rewrite.handler.RedirectPatternRule;
-import org.eclipse.jetty.rewrite.handler.RewriteHandler;
-import org.eclipse.jetty.rewrite.handler.RewritePatternRule;
-import org.eclipse.jetty.rewrite.handler.RewriteRegexRule;
+import org.eclipse.jetty.rewrite.handler.*;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.HandlerList;
 import org.eclipse.jetty.server.handler.ResourceHandler;
@@ -20,6 +18,7 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.DispatcherType;
+import javax.servlet.http.HttpServletResponse;
 import java.net.URI;
 import java.util.EnumSet;
 import java.util.Set;
@@ -87,6 +86,11 @@ public class PhantAuthServer extends Server {
 
         final RewritePatternRule indexRule = new RewritePatternRule("", Endpoint.INDEX.getPath());
         rewriteHandler.addRule(indexRule);
+
+        if ( serviceURI.toString().endsWith(Config.DEFAULT_DOMAIN) ) {
+            final ResponsePatternRule robotsRule = new ResponsePatternRule("/robots.txt", String.valueOf(HttpServletResponse.SC_NOT_FOUND), "Not Found");
+            rewriteHandler.addRule(robotsRule);
+        }
 
         return rewriteHandler;
     }
