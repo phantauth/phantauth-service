@@ -19,6 +19,7 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.annotation.Nonnull;
 import javax.inject.Inject;
+import java.time.LocalDate;
 import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
@@ -109,7 +110,7 @@ public class UserFaker extends AbstractFaker<User> {
 
             setLocale(LocaleUtils.languagesByCountry(person.getNationality().getCode()).get(0).toString());
 
-            setUpdatedAt(person.getDateOfBirth().plusYears(1).atStartOfDay().toEpochSecond(ZoneOffset.UTC));
+            setUpdatedAt(person.getDateOfBirth().withYear(LocalDate.now().minusYears(1).getYear()).atStartOfDay().toEpochSecond(ZoneOffset.UTC));
 
             setId(fake.getId());
             setSub(person.getUsername());
