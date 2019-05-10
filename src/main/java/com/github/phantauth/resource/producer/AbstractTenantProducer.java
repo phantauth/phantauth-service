@@ -103,7 +103,14 @@ abstract class AbstractTenantProducer implements Producer<Tenant> {
             props.put(Property.LOGO, defaultLogo);
         }
 
-        final String issuer = getIssuer(name);
+        String issuer;
+        if ( props.containsKey(Property.ISSUER)) {
+            issuer = (String)props.get(Property.ISSUER);
+        }
+        else {
+            issuer = getIssuer(name);
+            props.put(Property.ISSUER, issuer);
+        }
 
         if ( ! props.containsKey(Property.WEBSITE)) {
             props.put(Property.WEBSITE, issuer);
