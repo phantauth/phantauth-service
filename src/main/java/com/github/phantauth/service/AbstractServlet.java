@@ -6,6 +6,7 @@ import com.github.phantauth.core.Tenant;
 import com.github.phantauth.resource.Name;
 import com.github.phantauth.resource.TenantRepository;
 import com.github.phantauth.resource.Endpoint;
+import com.google.common.base.Strings;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.http.CommonContentTypes;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
@@ -14,11 +15,13 @@ import com.nimbusds.oauth2.sdk.http.ServletUtils;
 import com.nimbusds.oauth2.sdk.util.URLUtils;
 import net.minidev.json.JSONObject;
 
+import javax.servlet.ServletException;
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
 import java.util.Map;
 
 public abstract class AbstractServlet extends HttpServlet {
@@ -29,6 +32,8 @@ public abstract class AbstractServlet extends HttpServlet {
 
     protected final Endpoint endpoint;
     protected final TenantRepository tenantRepository;
+
+    private String defaultServerName;
 
     protected AbstractServlet(final Endpoint endpoint, final TenantRepository tenantRepository) {
         this.endpoint = endpoint;
@@ -148,8 +153,16 @@ public abstract class AbstractServlet extends HttpServlet {
         }
     }
 
+    @Override
+    public void init() throws ServletException {
+        super.init();
+        defaultServerName = URI.create(tenantRepository.getDefaultTenant().getIssuer()).getHost();
+    }
+
     protected Tenant getTenant(final HttpServletRequest servletRequest) {
-        return tenantRepository.get(servletRequest.getParameter(PARAM_TENANT));
+        final String param = servletRequest.getParameter(PARAM_TENANT);
+        final String serverName = servletRequest.getServerName();
+        return tenantRepository.get(Strings.isNullOrEmpty(param) && ! serverName.equals(defaultServerName) ? serverName : param);
     }
 
     protected Tenant getTenant(final HTTPRequest request) {

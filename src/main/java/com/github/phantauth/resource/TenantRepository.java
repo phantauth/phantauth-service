@@ -22,6 +22,10 @@ public class TenantRepository extends Repository<Tenant> {
         return get(null, Name.parse(name));
     }
 
+    public Tenant get(final String name, final String server) {
+        return get(null, Name.parse(name));
+    }
+
     @Override
     public Tenant get(final Tenant tenant, final Name name) {
 
