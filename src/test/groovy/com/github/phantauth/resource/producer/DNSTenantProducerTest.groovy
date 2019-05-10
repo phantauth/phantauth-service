@@ -73,6 +73,7 @@ class DNSTenantProducerTest extends Specification {
         tenant.userinfo == null
         tenant.name == "CSV Test"
         tenant.flags == null
+        tenant.issuer == "https://example.com"
 
         /*
         when:

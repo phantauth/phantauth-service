@@ -33,11 +33,12 @@ public abstract class AbstractServlet extends HttpServlet {
     protected final Endpoint endpoint;
     protected final TenantRepository tenantRepository;
 
-    private String defaultServerName;
+    private final String defaultServerName;
 
     protected AbstractServlet(final Endpoint endpoint, final TenantRepository tenantRepository) {
         this.endpoint = endpoint;
         this.tenantRepository = tenantRepository;
+        defaultServerName = URI.create(tenantRepository.getDefaultTenant().getIssuer()).getHost();
     }
 
     protected abstract HTTPResponse handleGet(final HTTPRequest req) throws IOException;
@@ -151,12 +152,6 @@ public abstract class AbstractServlet extends HttpServlet {
             servletRequest.getServletContext().log(e.getMessage(), e);
             servletResponse.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         }
-    }
-
-    @Override
-    public void init() throws ServletException {
-        super.init();
-        defaultServerName = URI.create(tenantRepository.getDefaultTenant().getIssuer()).getHost();
     }
 
     protected Tenant getTenant(final HttpServletRequest servletRequest) {
