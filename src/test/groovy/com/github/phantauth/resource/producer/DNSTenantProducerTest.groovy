@@ -73,6 +73,8 @@ class DNSTenantProducerTest extends Specification {
         tenant.name == "CSV Test"
         tenant.flags == null
         tenant.issuer == "https://example.com"
+        tenant.logo == "https://cdn.staticaly.com/favicons/www.theoi.com"
+        tenant.favicon == "https://cdn.staticaly.com/favicons/www.github.com"
 
         when:
         tenant = producer.get(null, Name.parse("csv"))
