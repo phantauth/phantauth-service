@@ -2,3 +2,4 @@ name=CSV Test
 repository=[(${config.serviceURI})]{/resource}
 logo=https://cdn.staticaly.com/favicons/www.theoi.com
 issuer=https://example.com
+favicon=https://cdn.staticaly.com/favicons/www.github.com

@@ -68,6 +68,10 @@ public interface Tenant {
     @JsonView({Views.Phantom.class, Views.Config.class})
     String getLogo();
 
+    @JsonProperty(Property.FAVICON)
+    @JsonView({Views.Phantom.class, Views.Config.class})
+    String getFavicon();
+
     @JsonProperty(Property.THEME)
     @JsonView({Views.Phantom.class,Views.Config.class})
     String getTheme();

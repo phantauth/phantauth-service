@@ -7,6 +7,7 @@ public class Property {
     public static final String PROFILE = "profile";
     public static final String LOGO = "logo";
     public static final String LOGO_EMAIL = "logo_email";
+    public static final String FAVICON = "favicon";
     public static final String ID="@id";
     public static final String MEMBERS = "members";
     public static final String ISSUER = "issuer";

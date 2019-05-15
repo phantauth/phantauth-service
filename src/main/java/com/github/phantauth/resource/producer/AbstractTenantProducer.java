@@ -28,6 +28,7 @@ abstract class AbstractTenantProducer implements Producer<Tenant> {
     private static final String DEFAULT_TEMPLATE_PATTERN = "%s{/resource}";
     private static final String ISSUER_PATTERN = "%s{/tenant}";
     private static final String LOGO_PATTERN = "%s/logo/phantauth-logo-light.svg";
+    private static final String FAVICON_PATTERN = "%s/logo/phantauth-favicon.png";
 
     private static final String GOOGLE_SHEET_PATTERN="https://docs.google.com/spreadsheets/d/%s/gviz/tq?tqx=out:csv";
 
@@ -40,6 +41,7 @@ abstract class AbstractTenantProducer implements Producer<Tenant> {
     private final String defaultDomain;
     private final String defaultTenantTemplate;
     private final String defaultLogo;
+    private final String defaultFavicon;
     private final UriTemplate issuerTemplate;
 
     AbstractTenantProducer(final URI serviceURI, final URI defaultTenantURI, final URI developerPortalURI) {
@@ -49,6 +51,7 @@ abstract class AbstractTenantProducer implements Producer<Tenant> {
         this.defaultTenantId = getDefaultTenantId(serviceURI, defaultTenantURI);
         this.defaultTenantTemplate = String.format(DEFAULT_TEMPLATE_PATTERN, defaultTenantURI.toString());
         this.defaultLogo = String.format(LOGO_PATTERN, developerPortalURI.toString());
+        this.defaultFavicon = String.format(FAVICON_PATTERN, developerPortalURI.toString());
         this.issuerTemplate = UriTemplate.fromTemplate(String.format(ISSUER_PATTERN, this.serviceURI));
     }
 
@@ -101,6 +104,10 @@ abstract class AbstractTenantProducer implements Producer<Tenant> {
 
         if ( ! props.containsKey(Property.LOGO)) {
             props.put(Property.LOGO, defaultLogo);
+        }
+
+        if ( ! props.containsKey(Property.FAVICON)) {
+            props.put(Property.FAVICON, defaultFavicon);
         }
 
         String issuer;
