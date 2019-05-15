@@ -6,7 +6,6 @@ import com.github.phantauth.resource.ResourceModule
 import com.github.phantauth.test.ServiceLocator
 import com.github.phantauth.test.TestModule
 import org.junit.ClassRule
-import org.minidns.hla.ResolverApi
 import spock.lang.Shared
 import spock.lang.Specification
 
@@ -74,6 +73,18 @@ class DNSTenantProducerTest extends Specification {
         tenant.name == "CSV Test"
         tenant.flags == null
         tenant.issuer == "https://example.com"
+
+        when:
+        tenant = producer.get(null, Name.parse("csv"))
+        tenant = producer.get(tenant, Name.EMPTY)
+
+        then:
+        tenant.sub == "csv"
+        tenant.userinfo == null
+        tenant.name == "CSV Test"
+        tenant.flags == null
+        tenant.issuer == "https://example.com"
+
 
         /*
         when:
