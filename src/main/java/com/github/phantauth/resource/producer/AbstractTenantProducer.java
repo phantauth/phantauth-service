@@ -139,10 +139,14 @@ abstract class AbstractTenantProducer implements Producer<Tenant> {
 
     protected abstract Map<String, Object> read(final Name name);
 
+    private String getDefaultTenant(final Tenant tenant) {
+        return tenant == null ? defaultTenantId : tenant.getSub();
+    }
+
     @Override
     public Tenant get(final Tenant tenant, final Name input) {
         final Name name = input.isInstanceEmpty()
-                ? input.ensureAuthority(() -> tenant == null ? defaultTenantId : tenant.getSub())
+                ? input.ensureAuthority(() -> getDefaultTenant(tenant) )
                 : input.ensureUserInfo(() -> defaultDomain);
         final Map<String, Object> props = read(name);
         if ( props == null ) {
