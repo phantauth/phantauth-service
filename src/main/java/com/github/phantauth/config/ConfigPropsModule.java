@@ -48,6 +48,11 @@ public class ConfigPropsModule {
         return config.getTTL();
     }
 
+    @Provides @Named("standalone")
+    static boolean provideStandalone(final Config config) {
+        return config.isStandalone();
+    }
+
     @Provides
     static JWKSet provideKeySet(final Config config)  {
         try {

@@ -50,8 +50,8 @@ abstract class AbstractTenantProducer implements Producer<Tenant> {
         this.defaultDomainSuffix = '.' + serviceURI.getHost();
         this.defaultTenantId = getDefaultTenantId(serviceURI, defaultTenantURI);
         this.defaultTenantTemplate = String.format(DEFAULT_TEMPLATE_PATTERN, defaultTenantURI.toString());
-        this.defaultLogo = String.format(LOGO_PATTERN, developerPortalURI.toString());
-        this.defaultFavicon = String.format(FAVICON_PATTERN, developerPortalURI.toString());
+        this.defaultLogo = String.format(LOGO_PATTERN, defaultTenantURI.toString());
+        this.defaultFavicon = String.format(FAVICON_PATTERN, defaultTenantURI.toString());
         this.issuerTemplate = UriTemplate.fromTemplate(String.format(ISSUER_PATTERN, this.serviceURI));
     }
 

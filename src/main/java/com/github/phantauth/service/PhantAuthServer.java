@@ -4,7 +4,9 @@ import com.github.phantauth.config.Config;
 import com.github.phantauth.resource.Endpoint;
 import org.eclipse.jetty.rewrite.handler.*;
 import org.eclipse.jetty.server.*;
+import org.eclipse.jetty.server.Request;
 import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.HandlerWrapper;
 import org.eclipse.jetty.server.handler.ResourceHandler;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
@@ -19,7 +21,10 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.DispatcherType;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.URI;
 import java.util.EnumSet;
 import java.util.Set;
@@ -42,7 +47,7 @@ public class PhantAuthServer extends Server {
         }
 
         final ServletContextHandler servletContextHandler = newServletContextHandler(servlets, serviceURI);
-        final ResourceHandler resHandler = newResourceHandler(servletContextHandler);
+        final Handler resHandler = newResourceHandler(servletContextHandler);
         final RewriteHandler rewriteHandler = newRewriteHandler(resHandler, serviceURI, defaultTenantURI);
 
         setHandler(new HandlerList(rewriteHandler, resHandler, servletContextHandler));
@@ -63,12 +68,20 @@ public class PhantAuthServer extends Server {
         return servletContextHandler;
     }
 
-    private ResourceHandler newResourceHandler(final Handler baseHandler) {
+    private Handler newResourceHandler(final Handler baseHandler) {
         final ResourceHandler resHandler = new ResourceHandler();
         resHandler.setDirAllowed(false);
         resHandler.setBaseResource(Resource.newClassPathResource("/docroot/"));
+        final HandlerWrapper wrapper = new HandlerWrapper() {
+            @Override
+            public void handle(final String target, final Request baseRequest, final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
+                response.addHeader("Access-Control-Allow-Origin","*");
+                super.handle(target, baseRequest, request, response);
+            }
+        };
         resHandler.setHandler(baseHandler);
-        return resHandler;
+        wrapper.setHandler(resHandler);
+        return wrapper;
     }
 
     private RewriteHandler newRewriteHandler(final Handler baseHandler, final URI serviceURI, final URI defaultTenantURI) {

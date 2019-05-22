@@ -20,4 +20,13 @@ class ConfigTest extends Specification {
         "https://default." + domain == config.defaultTenantURI
         "https://www." + domain == config.developerPortalURI
     }
+
+    def "test lite"() {
+        when:
+        Config config = new Config.Builder().setStandalone(true).build()
+
+        then:
+
+        "http://127.0.0.1:${config.port}" == config.serviceURI
+    }
 }
