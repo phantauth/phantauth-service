@@ -7,6 +7,6 @@ RUN gradle shadowJar
 FROM openjdk:10-jre-slim
 ENV PORT="8763"
 EXPOSE 8763
-COPY --from=java /home/gradle/src/build/libs/phantauth-all.jar /app/
+COPY --from=builder /home/gradle/src/build/libs/phantauth-all.jar /app/
 WORKDIR /app
 CMD java -jar phantauth-all.jar
