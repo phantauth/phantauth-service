@@ -44,7 +44,7 @@ abstract class AbstractTenantProducer implements Producer<Tenant> {
     private final String defaultFavicon;
     private final UriTemplate issuerTemplate;
 
-    AbstractTenantProducer(final URI serviceURI, final URI defaultTenantURI, final URI developerPortalURI) {
+    AbstractTenantProducer(final URI serviceURI, final URI defaultTenantURI) {
         this.serviceURI = serviceURI.toString();
         this.defaultDomain = serviceURI.getHost();
         this.defaultDomainSuffix = '.' + serviceURI.getHost();

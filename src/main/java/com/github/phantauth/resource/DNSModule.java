@@ -9,14 +9,12 @@ import org.minidns.hla.ResolverApi;
 import org.minidns.record.TXT;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-import org.thymeleaf.exceptions.TemplateEngineException;
 import org.thymeleaf.templatemode.TemplateMode;
 import org.thymeleaf.templateresolver.ClassLoaderTemplateResolver;
 
 import javax.inject.Named;
 import javax.inject.Singleton;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.StringReader;
 import java.util.*;
 import java.util.function.Function;

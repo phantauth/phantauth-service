@@ -13,8 +13,8 @@ public class DNSTenantProducer extends AbstractTenantProducer {
     private final Function<String,Map<String, Object>> txtMapper;
 
     @Inject
-    public DNSTenantProducer(@Named("serviceURI") final URI serviceURI, @Named("defaultTenantURI") final URI defaultTenantURI, @Named("developerPortalURI") final URI developerPortalURI, @Named("txtMapper") final Function<String,Map<String, Object>> txtMapper) {
-        super(serviceURI, defaultTenantURI, developerPortalURI);
+    public DNSTenantProducer(@Named("serviceURI") final URI serviceURI, @Named("defaultTenantURI") final URI defaultTenantURI, @Named("txtMapper") final Function<String,Map<String, Object>> txtMapper) {
+        super(serviceURI, defaultTenantURI);
         this.txtMapper = txtMapper;
     }
 

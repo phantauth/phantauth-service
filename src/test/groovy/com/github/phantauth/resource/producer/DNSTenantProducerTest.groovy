@@ -16,10 +16,9 @@ class DNSTenantProducerTest extends Specification {
     def "test default tenant"() {
         URI serviceURI = new URI("http://example.com")
         URI tenantURI = new URI("http://default.example.com")
-        URI portalURI = new URI("http://www.example.com")
 
         when:
-        DNSTenantProducer producer = new DNSTenantProducer(serviceURI, tenantURI, portalURI, new ResourceModule.TxtMapper(new TestModule.TestTxtResolver(locator.config)))
+        DNSTenantProducer producer = new DNSTenantProducer(serviceURI, tenantURI, new ResourceModule.TxtMapper(new TestModule.TestTxtResolver(locator.config)))
 
         then:
         producer.getIssuer(Name.EMPTY) == serviceURI as String

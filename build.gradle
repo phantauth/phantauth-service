@@ -42,6 +42,7 @@ sourceSets {
     }
 
     test {
+        output.dir(generatedResources, builtBy: 'generateResources')
     }
 }
 
@@ -163,11 +164,18 @@ sonarqube {
     }
 }
 
-/*
+
 jacoco {
-    applyTo run
+    toolVersion = "0.8.4"
 }
 
+test {
+    jacoco {
+        excludes += ['com/gargoylesoftware/**']
+    }
+}
+
+/*
 jacocoTestReport {
     executionData files(new File(project.buildDir, "jacoco").listFiles())
     reports {
