@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
 import org.immutables.value.Value;
 
 import java.net.URI;
+import java.util.Optional;
 import java.util.concurrent.TimeUnit;
 
 @Value.Immutable
@@ -56,12 +57,20 @@ public abstract class Config {
 
     @Value.Default
     public String getServiceURI() {
+        if ( isStandalone() ) {
+            return getenv(ENV_SERVICE_URI, String.format("http://127.0.0.1:%s", getPort()));
+        }
         return getenv(ENV_SERVICE_URI, DEFAULT_SERVICE_URI, getDomain());
     }
 
     @Value.Default
     public int getPort() {
         return Integer.parseInt(getenv(ENV_PORT, getenv(ENV_PORT_HEROKU, DEFAULT_PORT)));
+    }
+
+    @Value.Default
+    public boolean isStandalone() {
+        return ! Optional.ofNullable(System.getenv(ENV_DOMAIN)).isPresent();
     }
 
     @Value.Default

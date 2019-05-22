@@ -23,8 +23,8 @@ public class ExternalTenantProducer extends AbstractTenantProducer {
     private final ExternalCache<Map<String,Object>> cache;
 
     @Inject
-    public ExternalTenantProducer(@Named("serviceURI") final URI serviceURI, @Named("defaultTenantURI") final URI defaultTenantURI, @Named("developerPortalURI") final URI developerPortalURI, @Named("ttl") final long cacheTTL) {
-        super(serviceURI, defaultTenantURI, developerPortalURI);
+    public ExternalTenantProducer(@Named("serviceURI") final URI serviceURI, @Named("defaultTenantURI") final URI defaultTenantURI, @Named("ttl") final long cacheTTL) {
+        super(serviceURI, defaultTenantURI);
         cache = new ExternalCache<>(CACHE_MAX_TENANTS, cacheTTL, this::read);
     }
 

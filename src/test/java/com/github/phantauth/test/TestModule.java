@@ -38,6 +38,7 @@ public class TestModule {
                 .setServiceURI("http://"+DOMAIN+":" +servicePort)
                 .setDefaultTenantURI("http://default."+DOMAIN+":"+ servicePort)
                 .setDeveloperPortalURI("http://www."+DOMAIN+":" + developerPortalPort)
+                .setStandalone(true)
                 .build();
         return config;
     }

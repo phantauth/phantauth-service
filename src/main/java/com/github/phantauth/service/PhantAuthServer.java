@@ -5,7 +5,7 @@ import com.github.phantauth.resource.Endpoint;
 import org.eclipse.jetty.rewrite.handler.*;
 import org.eclipse.jetty.server.*;
 import org.eclipse.jetty.server.handler.HandlerList;
-import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
@@ -20,7 +20,9 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletResponse;
+import java.net.MalformedURLException;
 import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -42,10 +44,9 @@ public class PhantAuthServer extends Server {
         }
 
         final ServletContextHandler servletContextHandler = newServletContextHandler(servlets, serviceURI);
-        final ResourceHandler resHandler = newResourceHandler(servletContextHandler);
-        final RewriteHandler rewriteHandler = newRewriteHandler(resHandler, serviceURI, defaultTenantURI);
+        final RewriteHandler rewriteHandler = newRewriteHandler(servletContextHandler, serviceURI, defaultTenantURI);
 
-        setHandler(new HandlerList(rewriteHandler, resHandler, servletContextHandler));
+        setHandler(new HandlerList(rewriteHandler, servletContextHandler));
     }
 
     private ServletContextHandler newServletContextHandler(final Set<AbstractServlet> servlets, final URI serviceURI) {
@@ -60,15 +61,19 @@ public class PhantAuthServer extends Server {
         }
         servletContextHandler.addFilter(holder, "/*", EnumSet.of(DispatcherType.REQUEST));
         addServlets(servletContextHandler, servlets);
-        return servletContextHandler;
-    }
 
-    private ResourceHandler newResourceHandler(final Handler baseHandler) {
-        final ResourceHandler resHandler = new ResourceHandler();
-        resHandler.setDirAllowed(false);
-        resHandler.setBaseResource(Resource.newClassPathResource("/docroot/"));
-        resHandler.setHandler(baseHandler);
-        return resHandler;
+        final ServletHolder defaultHolder = new ServletHolder("default", DefaultServlet.class);
+        defaultHolder.setInitParameter("dirAllowed", "false");
+        servletContextHandler.addServlet(defaultHolder, "/");
+
+        try {
+            URI docroot = PhantAuthServer.class.getResource("/docroot/default/index.html").toURI().resolve("./");
+            servletContextHandler.setBaseResource(Resource.newResource(docroot));
+        } catch (URISyntaxException | MalformedURLException e) {
+            throw new IllegalStateException(e);
+        }
+
+        return servletContextHandler;
     }
 
     private RewriteHandler newRewriteHandler(final Handler baseHandler, final URI serviceURI, final URI defaultTenantURI) {

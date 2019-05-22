@@ -44,14 +44,14 @@ abstract class AbstractTenantProducer implements Producer<Tenant> {
     private final String defaultFavicon;
     private final UriTemplate issuerTemplate;
 
-    AbstractTenantProducer(final URI serviceURI, final URI defaultTenantURI, final URI developerPortalURI) {
+    AbstractTenantProducer(final URI serviceURI, final URI defaultTenantURI) {
         this.serviceURI = serviceURI.toString();
         this.defaultDomain = serviceURI.getHost();
         this.defaultDomainSuffix = '.' + serviceURI.getHost();
         this.defaultTenantId = getDefaultTenantId(serviceURI, defaultTenantURI);
         this.defaultTenantTemplate = String.format(DEFAULT_TEMPLATE_PATTERN, defaultTenantURI.toString());
-        this.defaultLogo = String.format(LOGO_PATTERN, developerPortalURI.toString());
-        this.defaultFavicon = String.format(FAVICON_PATTERN, developerPortalURI.toString());
+        this.defaultLogo = String.format(LOGO_PATTERN, defaultTenantURI.toString());
+        this.defaultFavicon = String.format(FAVICON_PATTERN, defaultTenantURI.toString());
         this.issuerTemplate = UriTemplate.fromTemplate(String.format(ISSUER_PATTERN, this.serviceURI));
     }
 
