@@ -20,9 +20,8 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletResponse;
-import java.net.MalformedURLException;
 import java.net.URI;
-import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -66,12 +65,8 @@ public class PhantAuthServer extends Server {
         defaultHolder.setInitParameter("dirAllowed", "false");
         servletContextHandler.addServlet(defaultHolder, "/");
 
-        try {
-            URI docroot = PhantAuthServer.class.getResource("/docroot/default/index.html").toURI().resolve("./");
-            servletContextHandler.setBaseResource(Resource.newResource(docroot));
-        } catch (URISyntaxException | MalformedURLException e) {
-            throw new IllegalStateException(e);
-        }
+        URL docroot = PhantAuthServer.class.getResource("/docroot/default");
+        servletContextHandler.setBaseResource(Resource.newResource(docroot));
 
         return servletContextHandler;
     }
