@@ -136,11 +136,23 @@ buildTemplate.dependsOn(cloneTemplate, npm_install)
 
 task generateResources {
     doLast {
+        def src = "${project.buildDir}/phantauth-default/public"
         def dir = file("${project.properties.generatedResources}/docroot/default")
         dir.mkdirs()
+        // for phantauth-all.jar
         copy {
-            from "${project.buildDir}/phantauth-default/public"
+            from src
             into dir
+        }
+        // for gradlew test
+        copy {
+            from src
+            into "$sourceSets.test.output.resourcesDir/docroot/default"
+        }
+        // for gradlew run
+        copy {
+            from src
+            into "$sourceSets.main.output.resourcesDir/docroot/default"
         }
     }
 }

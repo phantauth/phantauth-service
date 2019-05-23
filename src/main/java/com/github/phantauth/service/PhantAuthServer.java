@@ -65,8 +65,7 @@ public class PhantAuthServer extends Server {
         defaultHolder.setInitParameter("dirAllowed", "false");
         servletContextHandler.addServlet(defaultHolder, "/");
 
-        URL docroot = PhantAuthServer.class.getResource("/docroot/default");
-        servletContextHandler.setBaseResource(Resource.newResource(docroot));
+        servletContextHandler.setBaseResource(Resource.newClassPathResource("/docroot"));
 
         return servletContextHandler;
     }
