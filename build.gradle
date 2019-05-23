@@ -167,7 +167,10 @@ shadowJar {
 shadowJar.dependsOn(generateResources)
 
 task stage(dependsOn: ['test', 'build'])
-//compileJava.mustRunAfter copyTemplate
+
+compileJava.dependsOn(generateResources)
+
+compileJava.mustRunAfter generateResources
 
 sonarqube {
     properties {
