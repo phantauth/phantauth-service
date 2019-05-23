@@ -5,13 +5,10 @@ import spock.lang.Specification
 class ConfigTest extends Specification {
 
     def "test defaults"() {
-        String domain = System.getenv("PHANTAUTH_DOMAIN")
-        if ( domain == null ) {
-            domain = Config.DEFAULT_DOMAIN
-        }
+        String domain = "localtest.me"
 
         when:
-        Config config = new Config() {}
+        Config config =  new Config.Builder().setDomain(domain).setStandalone(false).build()
 
         then:
         config.getPort() != 0

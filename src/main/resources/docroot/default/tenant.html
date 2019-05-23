@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:include="layout :: head(${tenant.name})"/>
+
+<body>
+  <nav th:replace="${widget == ''} ? ~{layout :: navbar('')} : ~{}"></nav>
+
+  <!--email_off-->
+  <div th:if="${widget == '' || widget == 'default'}" class="container">
+    <div class="jumbotron">
+      <h2 class="display-6"><img th:attr="src=${tenant.logo}"/><span th:utext="${tenant.name}"></span></h2>
+      <p th:if="${tenant.summary}" class="lead" th:utext="${tenant.summary}"></p>
+    </div>
+
+    <h3>Issuer</h3>
+    <p>This is the issuer endpoint for <strong><span th:replace="settings :: name"></span></strong> tenant.
+    You can get OpenID Connect endpoint addresses and client credentials here.
+    </p>
+
+    <div th:if="${ ! #strings.isEmpty(tenant.attribution) }" class="ml-5 border-left pl-3">
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.6.1/marked.min.js"></script>
+      <h6>Attribution</h6>
+      <p id="attribution" th:attr="data-markdown=${tenant.attribution}"></p>
+      <script type="text/javascript">
+        document.getElementById('attribution').innerHTML = marked(document.getElementById('attribution').getAttribute('data-markdown'));
+      </script>
+    </div>
+
+    <h4>Test Page</h4>
+    <p>You can test authentication on tenant's <a th:attr="href=${ #strings.append(tenant.issuer,'/test')}">OpenID Connect Test</a> page<span th:if="${! tenant.domain }"> or you can try random user generation on <a th:attr="href=${ #strings.append(tenant.issuer,'/test/user')}">Random User Test</a> page</span>.
+    </p>
+
+    <div th:if="${ tenant.domain }">
+      <h4>Domain</h4>
+      <p>This domain tenant aggregates several other tenants. Before actual tenant login, user should select which tenant to use.
+      The table below shows the aggregated member tenants. You can use member tenants directly as issuer or domain tenant as 
+      aggregating issuer. If you are not care about tenants, lets use <a th:attr="href=${ #strings.append(tenant.issuer, '/../')}">PhantAuth Default</a> as issuer.
+      </p>
+      <table class="table table-hover table-sm table-properties m-3">
+        <tbody th:each="member : ${domain.members}">
+          <tr class="clickable-row" th:attr="data-href=${member.issuer}">
+            <td><img th:attr="src=${member.logo}" class="mt-1 mb-1 img-xs" /> <span th:utext="${member.name}" class="align-middle"></span></td>
+            <td><span th:utext="${member.summary}" class="align-middle"></span></td>
+          </tr>
+        </tbody>
+      </table>
+      <script>
+        jQuery(document).ready(function ($) {
+          $(".clickable-row").click(function () {
+            window.location = $(this).data("href");
+          });
+        });
+      </script>
+    </div>
+
+    <h4>OpenID Connect Endpoints</h4>
+    <p>The table bellow contains standard OpenID Connect Endpoint addresses. You don't need to 
+      enter these endpoint addresses manually, if your provider/library supports OpenID Connect Discovery.
+      In this case you should give ony the issuer location, or discovery location (depens on implementation).
+    </p>
+    <table class="table table-striped table-sm table-borderless">
+      <tr><th>Endpoint</th><th>Location</th></tr>
+      <tr><td>Issuer</td><td><span th:utext="${meta.issuer}"></span></tr>
+      <tr><td>Discovery</td><td><a th:attr="href=${ #strings.append(meta.issuer,'/.well-known/openid-configuration')}" th:utext="${ #strings.append(meta.issuer,'/.well-known/openid-configuration')}"></a></tr>
+      <tr><td>Authorization</td><td><span th:utext="${meta.authorizationEndpointURI}"></span></tr>
+      <tr><td>Token</td><td><span th:utext="${meta.tokenEndpointURI}"></span></tr>
+      <tr><td>User Info</td><td><span th:utext="${meta.userInfoEndpointURI}"></span></tr>
+      <tr><td>Introspection</td><td><span th:utext="${meta.introspectionEndpointURI}"></span></tr>
+      <tr><td>Key Set</td><td><span th:utext="${meta.JWKSetURI}"></span></tr>
+      <tr><td>Registration</td><td><span th:utext="${meta.registrationEndpointURI}"></span></tr>
+    </table>
+
+    <h4>Client registration</h4>
+    <p>You do not need to register your client software, just pick a <em>client_id</em> and use it. Some OpenID Connect workflow require <em>client_secret</em>.
+      Just type your <em>client_id</em> in the input box bellow and press <em>generate</em>. You will see your <em>client_secret</em> next to the <em>client_id</em>.
+      The generated logo and software name will displayed too. Leaving empty the <em>client_id</em> field, you can generate random <em>client_id</em> and
+      <em>client_secret</em>.
+      <br/>Check <a href="https://www.undefined">PhantAuth Developer Portal</a> for more information.
+    </p>
+    <form id="generator">
+      <div class="form-row">
+        <div class="col">
+          <input id="client_id" type="text" class="form-control" placeholder="Client ID">
+       </div>
+       <div class="col">
+          <input id="client_secret" type="text" class="form-control" readonly>
+       </div>
+      </div>
+      <div class="form-row mt-3">
+        <div class="col">
+          <button class="btn btn-outline-primary" id="generate" type="submit" title="Generate client_id">generate</button>
+        </div>
+        <div class="col text-right text-muted">
+          <span id="client_name" class="h5"></span>&nbsp;<img id="logo" class="img-sm border"/>
+        </div>
+      </div>
+    </form>
+
+    <h4>Resource Endpoints</h4>
+
+    <div th:if="${ ! #strings.isEmpty(tenant.script) }">
+      <p>This tenant generate users using client side script so not all resource endpoints are exposed.
+      </p>
+    </div>
+    <div th:if="${ tenant.domain }">
+      <p>This tenant is an aggregating domain tenant so not all resource endpoints are exposed.
+      </p>
+    </div>
+    
+    <p>The table bellow contains REST endpoints for random generated resources.
+      <br/>Check <a href="https://www.undefined/api">PhantAuth API documantation</a> for more information.
+    </p>
+    <table class="table table-striped table-sm table-borderless">
+      <tr><th>Endpoint</th><th>Location</th></tr>
+      <tr th:if="${! tenant.domain & #strings.isEmpty(tenant.script) }"><td>User</td><td><a th:attr="href=${ #strings.append(meta.issuer,'/user')}" th:utext="${ #strings.append(meta.issuer,'/user')}"></a></tr>
+      <tr th:if="${! tenant.domain & #strings.isEmpty(tenant.script) }"><td>Team</td><td><a th:attr="href=${ #strings.append(meta.issuer,'/team')}" th:utext="${ #strings.append(meta.issuer,'/team')}"></a></tr>
+      <tr><td>Client</td><td><a th:attr="href=${ #strings.append(meta.issuer,'/client')}" th:utext="${ #strings.append(meta.issuer,'/client')}"></a></tr>
+      <tr th:if="${! tenant.domain & #strings.isEmpty(tenant.script) }"><td>Fleet</td><td><a th:attr="href=${ #strings.append(meta.issuer,'/fleet')}" th:utext="${ #strings.append(meta.issuer,'/fleet')}"></a></tr>
+    </table>
+
+    <h4>Configuration</h4>
+    <p>The table bellow contains tenant configuration parameters.
+    </p>
+    <table class="table table-striped table-sm table-borderless">
+        <tr><th>Parameter</th><th>Value</th></tr>
+        <tr><td>sub</td><td th:utext="${tenant.sub}"></td></tr>
+        <tr th:if="${tenant.name}"><td>name</td><td th:utext="${tenant.name}"></td></tr>
+        <tr th:if="${tenant.summary}"><td>summary</td><td th:utext="${tenant.summary}"></td></tr>
+        <tr th:if="${tenant.userinfo}"><td>userinfo</td><td th:utext="${tenant.userinfo}"></td></tr>
+        <tr th:if="${tenant.flags}"><td>flags</td><td th:utext="${tenant.flags}"></td></tr>
+        <tr th:if="${tenant.sheet}"><td>sheet</td><td th:utext="${tenant.sheet}"></td></tr>
+        <tr th:if="${tenant.template}"><td>template</td><td th:utext="${tenant.template}"></td></tr>
+        <tr th:if="${tenant.website}"><td>website</td><td><a th:utext="${tenant.website}" th:attr="href=${tenant.website}"></a></td></tr>
+        <tr th:if="${tenant.factory}"><td>factory</td><td th:utext="${tenant.factory}"></td></tr>
+        <tr th:if="${tenant.script}"><td>script</td><td><a th:utext="${tenant.script}" th:attr="href=${tenant.script}"></a></td></tr>
+        <tr th:if="${tenant.depot}" ><td>depot</td><td th:utext="${tenant.depot}"></td></tr>
+        <tr th:if="${tenant.theme}"><td>theme</td><td><a th:utext="${tenant.theme}" th:attr="href=${tenant.theme}"></a></td></tr>
+        <tr th:if="${tenant.logo}"><td>logo</td><td><a th:utext="${tenant.logo}" th:attr="href=${tenant.logo}"></a></td></tr>
+        <tr th:if="${tenant.favicon}"><td>favicon</td><td><a th:utext="${tenant.favicon}" th:attr="href=${tenant.favicon}"></a></td></tr>
+        <tr><td>@id</td><td><a th:utext="${tenant.id}" th:attr="href=${tenant.id}"></a></td></tr>
+    </table>
+
+    <script type="text/javascript">
+      $(function () {
+      
+          function update() {
+              PhantAuth.get("client", $("#client_id").val(), function (client) {
+                  $("#client_id").val(client.client_id);
+                  $("#client_secret").val(client.client_secret);
+                  $("#client_name").text(client.client_name);
+                  $("#logo").attr('src', client.logo_uri);
+              });
+          }
+      
+          $("#generator").submit(function (event) {
+              event.preventDefault()
+              update();
+          });
+      
+      });
+    </script>
+    <form th:replace="phantauth :: javascript"></form>
+  </div>
+
+  <div th:replace="${widget != '' && widget != 'default'} ? ~{settings :: widgets} : ~{}"></div>
+  <!--/email_off-->
+</body>
+
+</html>

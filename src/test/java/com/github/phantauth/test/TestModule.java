@@ -36,7 +36,7 @@ public class TestModule {
         final Config  config = new Config.Builder()
                 .setPort(servicePort)
                 .setServiceURI("http://"+DOMAIN+":" +servicePort)
-                .setDefaultTenantURI("http://default."+DOMAIN+":"+ servicePort)
+                .setDefaultTenantURI("http://"+DOMAIN+":"+ servicePort + "/default")
                 .setDeveloperPortalURI("http://www."+DOMAIN+":" + developerPortalPort)
                 .setStandalone(true)
                 .build();

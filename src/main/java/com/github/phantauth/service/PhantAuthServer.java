@@ -12,6 +12,7 @@ import org.eclipse.jetty.servlet.ServletHolder;
 import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.servlets.HeaderFilter;
 import org.eclipse.jetty.util.resource.Resource;
+import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,10 +21,10 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
-import java.util.EnumSet;
-import java.util.Set;
+import java.util.*;
 
 @Singleton
 public class PhantAuthServer extends Server {
@@ -65,8 +66,7 @@ public class PhantAuthServer extends Server {
         defaultHolder.setInitParameter("dirAllowed", "false");
         servletContextHandler.addServlet(defaultHolder, "/");
 
-        URL docroot = PhantAuthServer.class.getResource("/docroot/default");
-        servletContextHandler.setBaseResource(Resource.newResource(docroot));
+        servletContextHandler.setBaseResource(Resource.newClassPathResource("/docroot"));
 
         return servletContextHandler;
     }
