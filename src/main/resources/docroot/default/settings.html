@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <link th:fragment="theme" rel="stylesheet" th:attr="href=${tenant.theme == null ? 'bootstrap-phantauth.min.css' : tenant.theme}" crossorigin="anonymous"/>
+  <link th:fragment="favicon" rel="shortcut icon" th:attr="href=${tenant.favicon == null ? 'logo/phantauth-favicon.png' : tenant.favicon}" />
+</head>
+
+<body>
+  <img th:fragment="logo" th:attr="src=${tenant.logo == null ? 'logo/phantauth-logo-light.svg' : tenant.logo}"></img>
+  <span th:fragment="name" th:utext="${tenant.name == null ? 'PhantAuth' : tenant.name}"></span>
+  <div th:fragment="widgets">
+  
+    <div th:if="${user && widget == 'button'}">
+      <a th:attr="href=${user.profile}" target="_top" role="button" class="nav-link p-0 border rounded border-primary" >
+        <div style="padding: 0.1rem;">
+          <img th:attr="src=${user.picture}" class="rounded-circle p-1 float-left" style="width: 3.8rem;height: 3.8rem;"/>
+          <h6 th:utext="${user.name}" class="m-0"></h6>
+          <h6 th:utext="${user.email}" class="m-0 small"></h6>
+          <span class="small">
+            <span class="text-muted">sub: </span><span th:utext="${user.sub}"/>
+            <span class="text-muted">password: </span><span th:utext="${user.password}"/>
+          </span>
+        </div>
+      </a>
+    </div>
+
+    <div th:if="${user && widget == 'button-small'}">
+      <a th:attr="href=${user.profile}" target="_top" role="button" class="nav-link p-0 border rounded border-primary">
+        <div style="padding: 0.1rem;">
+          <img th:attr="src=${user.picture}" class="rounded-circle" style="width: 1.8rem;height: 1.8rem;"/>
+          <span th:utext="${user.name}" class="m-0"></span>
+        </div>
+      </a>
+    </div>
+
+    <div th:if="${user && widget == 'card'}" class="card" style="max-width: 40rem;">
+      <img th:attr="src=${user.picture}" class="rounded-circle card-img-top mx-auto d-block border shadow" style="width: 5rem;height: 5rem;"/>
+      <div class="card-body p-2">
+        <h5 th:utext="${user.name}" class="card-title text-center"></h5>
+        <h6 th:utext="${user.email}" class="card-subtitle small text-center"></h6>
+          <table class="table table-sm small mt-3">
+            <tr>
+              <th class="text-muted">username</th>
+              <td id="sub" th:utext="${user.sub}"></td>
+            </tr>
+            <tr>
+              <th class="text-muted">password</th>
+              <td th:utext="${user.password}"></td>
+            </tr>
+            <tr> 
+              <th class="text-muted">phone</th>
+              <td th:utext="${user.phoneNumber}"></td>
+            </tr>
+            <tr>
+              <th class="text-muted">gender</th>
+              <td th:utext="${user.gender}"></td>
+            </tr>
+            <tr>
+              <th class="text-muted">birthdate</th>
+              <td th:utext="${user.birthdate}"></td>
+            </tr>
+            <tr>
+              <th class="text-muted">locale</th>
+              <td th:utext="${user.locale}"></td>
+            </tr>
+            <tr>
+              <th class="text-muted">zoneinfo</th>
+              <td th:utext="${user.zoneinfo}"></td>
+            </tr>
+            <tr>
+              <th class="text-muted">country</th>
+              <td th:utext="${user.address.country}"></td>
+            </tr>
+            <tr>
+              <th class="text-muted">address</th>
+              <td th:utext="${user.address.formatted}"></td>
+            </tr>
+          </table>
+      </div>
+    </div>
+
+  </div>
+</body>
+
+</html>

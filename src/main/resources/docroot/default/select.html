@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="layout :: head('Domain Login')"/>
+<body th:attr="data-issuer=${tenant.issuer}">
+    <nav th:replace="layout :: navbar('')"></nav>
+
+    <div class="col-sm-12 col-md-6 offset-md-3 mt-3">
+        <h1 class="text-center">Domain Login</h1>
+        <p class="text-center lead">Please select tenant</p>
+
+        <form class="select-form">
+            <div th:each="member : ${domain.members}">
+                <button th:if="${! member.domain }" type="submit" class="tenant list-group-item list-group-item-action flex-column align-items-start border-0" th:attr="data-subtenant=${member.sub}">
+                    <img th:attr="src=${member.logo}" class="mt-1 mb-1 img-xs" /> &nbsp;<span th:utext="${member.name}"></span>
+                </button>
+            </div>
+            <div class="row mt-3">
+                <button class="btn btn-outline-danger" id="cancel" type="reset" title="Cancel login process"> cancel</button>&nbsp;
+            </div>
+          <input type="hidden" name="subtenant" id="subtenant" value="" />
+        </form>
+    </div>
+    <script type="text/javascript">
+        $(function () {
+
+          $('button.tenant').click(function (event) {
+            $("#subtenant").val($(this).data("subtenant"));
+            $(".select-form").submit();
+          });
+
+        });
+    </script>
+
+    <form th:replace="phantauth :: select"></form>
+</body>
+</html>

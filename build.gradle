@@ -38,11 +38,9 @@ repositories {
 
 sourceSets {
     main {
-        output.dir(generatedResources, builtBy: 'generateResources')        
     }
 
     test {
-        output.dir(generatedResources, builtBy: 'generateResources')
     }
 }
 
@@ -125,7 +123,6 @@ task cloneTemplate() {
 node {
     workDir = file("${project.buildDir}/nodejs")
     nodeModulesDir = file("${project.buildDir}/phantauth-default/node_modules")
-    download = true
 }
 
 task buildTemplate(type: NpmTask) {
@@ -134,48 +131,26 @@ task buildTemplate(type: NpmTask) {
 
 buildTemplate.dependsOn(cloneTemplate, npm_install)
 
-task generateResources {
+task template {
     doLast {
         def src = "${project.buildDir}/phantauth-default/public"
-        def dir = file("${project.properties.generatedResources}/docroot/default")
+        def dir = file("${sourceSets.main.resources.srcDirs[0]}/docroot/default")
         dir.mkdirs()
-        // for phantauth-all.jar
         copy {
             from src
             into dir
         }
-        // for gradlew test
-        copy {
-            from src
-            into "$sourceSets.test.output.resourcesDir/docroot/default"
-        }
-        // for gradlew run
-        copy {
-            from src
-            into "$sourceSets.main.output.resourcesDir/docroot/default"
-        }
     }
 }
 
-generateResources.dependsOn(buildTemplate)
+template.dependsOn(buildTemplate)
 
 shadowJar {
     exclude '*groovy*jar'
     exclude '*spock*jar'
 }
 
-shadowJar.dependsOn(generateResources)
-
 task stage(dependsOn: ['test', 'build'])
-
-//compileJava.dependsOn(generateResources)
-//compileJava.mustRunAfter generateResources
-
-processResources.dependsOn(generateResources)
-processTestResources.dependsOn(generateResources)
-
-project.tasks["sonarqube"].dependsOn "generateResources"
-
 
 sonarqube {
     properties {
@@ -193,24 +168,3 @@ test {
         excludes += ['com/gargoylesoftware/**']
     }
 }
-
-/*
-jacocoTestReport {
-    executionData files(new File(project.buildDir, "jacoco").listFiles())
-    reports {
-        html.enabled = true
-        xml.enabled = false
-        csv.enabled = false
-    }
-}
-*/
-
-/*
-task smoke(type: Test, group: 'Verification') {
-    testClassesDirs = sourceSets.smoke.output.classesDirs
-    classpath = sourceSets.smoke.runtimeClasspath
-    mustRunAfter integTest
-}
-*/
-
-//test.finalizedBy jacocoTestReport
