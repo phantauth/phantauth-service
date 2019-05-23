@@ -168,9 +168,11 @@ shadowJar.dependsOn(generateResources)
 
 task stage(dependsOn: ['test', 'build'])
 
-compileJava.dependsOn(generateResources)
+//compileJava.dependsOn(generateResources)
+//compileJava.mustRunAfter generateResources
 
-compileJava.mustRunAfter generateResources
+processResources.dependsOn(generateResources)
+processTestResources.dependsOn(generateResources)
 
 sonarqube {
     properties {
@@ -178,8 +180,6 @@ sonarqube {
         property "sonar.projectKey", "phantauth_phantauth-service"
     }
 }
-
-sonarqube.dependsOn(generateResources)
 
 jacoco {
     toolVersion = "0.8.4"
