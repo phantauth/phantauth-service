@@ -179,6 +179,7 @@ sonarqube {
     }
 }
 
+sonarqube.dependsOn(generateResources)
 
 jacoco {
     toolVersion = "0.8.4"
