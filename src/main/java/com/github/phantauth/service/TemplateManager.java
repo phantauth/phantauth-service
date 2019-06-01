@@ -69,8 +69,18 @@ public class TemplateManager {
         tenantResolver.setTemplateMode(TemplateMode.HTML);
         tenantResolver.setSuffix(SUFFIX);
         tenantResolver.setOrder(2);
-        localResolver.setCheckExistence(true);
+        tenantResolver.setCheckExistence(true);
         engine.addTemplateResolver(tenantResolver);
+
+        final ClassLoaderTemplateResolver defaultResolver = new ClassLoaderTemplateResolver();
+        defaultResolver.setPrefix("docroot/default/");
+        defaultResolver.setCacheTTLMs(Long.MAX_VALUE);
+        defaultResolver.setTemplateMode(TemplateMode.HTML);
+        defaultResolver.setCacheable(true);
+        defaultResolver.setSuffix(SUFFIX);
+        defaultResolver.setOrder(3);
+        defaultResolver.setCheckExistence(true);
+        engine.addTemplateResolver(defaultResolver);
     }
 
     @SafeVarargs
