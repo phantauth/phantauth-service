@@ -22,7 +22,7 @@ abstract class AbstractTenantProducer implements Producer<Tenant> {
     private static final List<String> DEFAULT_DEPOTS = ImmutableList.of(name(User.class), name(Team.class));
 
     @Getter(AccessLevel.PROTECTED)
-    private final ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES);
+    private final ObjectMapper mapper = new ObjectMapper().disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES).enable(DeserializationFeature.ACCEPT_SINGLE_VALUE_AS_ARRAY);
 
     private static final char TENANT_PREFIX = '_';
     private static final String DEFAULT_TEMPLATE_PATTERN = "%s{/resource}";
