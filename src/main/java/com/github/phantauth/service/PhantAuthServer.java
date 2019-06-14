@@ -9,10 +9,8 @@ import org.eclipse.jetty.servlet.DefaultServlet;
 import org.eclipse.jetty.servlet.FilterHolder;
 import org.eclipse.jetty.servlet.ServletContextHandler;
 import org.eclipse.jetty.servlet.ServletHolder;
-import org.eclipse.jetty.servlets.CrossOriginFilter;
 import org.eclipse.jetty.servlets.HeaderFilter;
 import org.eclipse.jetty.util.resource.Resource;
-import org.eclipse.jetty.util.resource.ResourceCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,9 +19,7 @@ import javax.inject.Named;
 import javax.inject.Singleton;
 import javax.servlet.DispatcherType;
 import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.util.*;
 
 @Singleton
@@ -52,9 +48,7 @@ public class PhantAuthServer extends Server {
     private ServletContextHandler newServletContextHandler(final Set<AbstractServlet> servlets, final URI serviceURI) {
         final ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
         servletContextHandler.setContextPath("/");
-        final FilterHolder corsHolder = new FilterHolder(new CrossOriginFilter());
-        corsHolder.setInitParameter(CrossOriginFilter.PREFLIGHT_MAX_AGE_PARAM, "1");
-        servletContextHandler.addFilter(corsHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
+        servletContextHandler.addFilter(new FilterHolder(new CrossOriginFilter()), "/*", EnumSet.of(DispatcherType.REQUEST));
         servletContextHandler.addFilter(new FilterHolder(new NoCacheFilter()), "/auth/*", EnumSet.of(DispatcherType.REQUEST));
         final FilterHolder holder = new FilterHolder(new HeaderFilter());
 
