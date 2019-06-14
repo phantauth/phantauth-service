@@ -52,7 +52,9 @@ public class PhantAuthServer extends Server {
     private ServletContextHandler newServletContextHandler(final Set<AbstractServlet> servlets, final URI serviceURI) {
         final ServletContextHandler servletContextHandler = new ServletContextHandler(ServletContextHandler.NO_SESSIONS);
         servletContextHandler.setContextPath("/");
-        servletContextHandler.addFilter(new FilterHolder(new CrossOriginFilter()), "/*", EnumSet.of(DispatcherType.REQUEST));
+        final FilterHolder corsHolder = new FilterHolder(new CrossOriginFilter());
+        corsHolder.setInitParameter(CrossOriginFilter.PREFLIGHT_MAX_AGE_PARAM, "1");
+        servletContextHandler.addFilter(corsHolder, "/*", EnumSet.of(DispatcherType.REQUEST));
         servletContextHandler.addFilter(new FilterHolder(new NoCacheFilter()), "/auth/*", EnumSet.of(DispatcherType.REQUEST));
         final FilterHolder holder = new FilterHolder(new HeaderFilter());
 
