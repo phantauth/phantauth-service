@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
 
+<head>
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/bs-stepper/dist/css/bs-stepper.min.css">
+  <script src="//cdn.jsdelivr.net/npm/bs-stepper/dist/js/bs-stepper.min.js"></script>
+</head>
 <head th:include="layout :: head(${tenant.name})"/>
 
 <body>
@@ -12,6 +16,66 @@
       <h2 class="display-6"><img th:attr="src=${tenant.logo}"/><span th:utext="${tenant.name}"></span></h2>
       <p th:if="${tenant.summary}" class="lead" th:utext="${tenant.summary}"></p>
     </div>
+    <script th:if="${ ! #strings.isEmpty(tenant.attribution) || ! #strings.isEmpty(tenant.about)}" src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.6.1/marked.min.js"></script>
+
+    <div th:if="${ ! #strings.isEmpty(tenant.about) && ! #strings.startsWith(tenant.about, 'http')}">
+      <p id="about" th:attr="data-markdown=${tenant.about}"></p>
+      <script type="text/javascript">
+        document.getElementById('about').innerHTML = marked(document.getElementById('about').getAttribute('data-markdown'));
+      </script>
+    </div>
+    <div th:if="${ ! #strings.isEmpty(tenant.about) && #strings.startsWith(tenant.about, 'http')}">
+      <div id="about" th:attr="data-href=${tenant.about}"></div>
+      <script type="text/javascript">
+        $.ajax({
+          url: document.getElementById('about').getAttribute('data-href'),
+          dataType: 'text',
+          success: function(data) {
+            document.getElementById('about').innerHTML = marked(data);
+            }
+          });
+      </script>
+    </div>
+
+    <h3 style="display: none;">Setup steps</h3>
+    <div class="bs-stepper vertical" style="display: none;">
+      <div class="bs-stepper-header" role="tablist">
+        <div class="step" data-target="#setup-step1">
+          <button type="button" class="step-trigger" role="tab" aria-controls="setup-step1" id="setup-step1-trigger">
+            <span class="bs-stepper-circle">1</span>
+            <span class="bs-stepper-label">Try it!</span>
+          </button>
+        </div>
+        <div class="line"></div>
+        <div class="step" data-target="#setup-step2">
+          <button type="button" class="step-trigger" role="tab" aria-controls="setup-step2" id="setup-step2-trigger">
+            <span class="bs-stepper-circle">2</span>
+            <span class="bs-stepper-label">Client</span>
+          </button>
+        </div>
+        <div class="line"></div>
+        <div class="step" data-target="#setup-step3">
+          <button type="button" class="step-trigger" role="tab" aria-controls="setup-step3" id="setup-step3-trigger">
+            <span class="bs-stepper-circle">3</span>
+            <span class="bs-stepper-label">Endpoints</span>
+          </button>
+        </div>
+      </div>
+      <div class="bs-stepper-content">
+        <div id="setup-step1" class="content" role="tabpanel" aria-labelledby="setup-step1-trigger">
+        Lets try authentication on <a th:attr="href=${ #strings.append(tenant.issuer,'/test')}">OpenID Connect Test</a> page! Ofcourse it is on optional step, you can skip it.
+        </div>
+        <div id="setup-step2" class="content" role="tabpanel" aria-labelledby="setup-step2-trigger">
+        </div>
+        <div id="setup-step3" class="content" role="tabpanel" aria-labelledby="setup-step3-trigger">
+        </div>
+      </div>
+      <script>
+        $(function() {
+          var stepper = new Stepper($('.bs-stepper')[0], {linear: false});
+        });
+      </script>
+    </div>
 
     <h3>Issuer</h3>
     <p>This is the issuer endpoint for <strong><span th:replace="settings :: name"></span></strong> tenant.
@@ -19,7 +83,6 @@
     </p>
 
     <div th:if="${ ! #strings.isEmpty(tenant.attribution) }" class="ml-5 border-left pl-3">
-      <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/0.6.1/marked.min.js"></script>
       <h6>Attribution</h6>
       <p id="attribution" th:attr="data-markdown=${tenant.attribution}"></p>
       <script type="text/javascript">
@@ -109,7 +172,7 @@
     </div>
     
     <p>The table bellow contains REST endpoints for random generated resources.
-      <br/>Check <a href="https://www.phantauth.net/api">PhantAuth API documantation</a> for more information.
+      <br/>Check <a href="https://www.phantauth.net/api">PhantAuth API documentation</a> for more information.
     </p>
     <table class="table table-striped table-sm table-borderless">
       <tr><th>Endpoint</th><th>Location</th></tr>
@@ -127,14 +190,17 @@
         <tr><td>sub</td><td th:utext="${tenant.sub}"></td></tr>
         <tr th:if="${tenant.name}"><td>name</td><td th:utext="${tenant.name}"></td></tr>
         <tr th:if="${tenant.summary}"><td>summary</td><td th:utext="${tenant.summary}"></td></tr>
+        <tr th:if="${tenant.about}"><td>about</td><td th:utext="${tenant.about}"></td></tr>
         <tr th:if="${tenant.userinfo}"><td>userinfo</td><td th:utext="${tenant.userinfo}"></td></tr>
         <tr th:if="${tenant.flags}"><td>flags</td><td th:utext="${tenant.flags}"></td></tr>
         <tr th:if="${tenant.sheet}"><td>sheet</td><td th:utext="${tenant.sheet}"></td></tr>
         <tr th:if="${tenant.template}"><td>template</td><td th:utext="${tenant.template}"></td></tr>
         <tr th:if="${tenant.website}"><td>website</td><td><a th:utext="${tenant.website}" th:attr="href=${tenant.website}"></a></td></tr>
         <tr th:if="${tenant.factory}"><td>factory</td><td th:utext="${tenant.factory}"></td></tr>
+        <tr th:if="${! #lists.isEmpty(tenant.factories)}"><td>factories</td><td th:utext="${tenant.factories}"></td></tr>
         <tr th:if="${tenant.script}"><td>script</td><td><a th:utext="${tenant.script}" th:attr="href=${tenant.script}"></a></td></tr>
         <tr th:if="${tenant.depot}" ><td>depot</td><td th:utext="${tenant.depot}"></td></tr>
+        <tr th:if="${! #lists.isEmpty(tenant.depots)}" ><td>depots</td><td th:utext="${tenant.depots}"></td></tr>
         <tr th:if="${tenant.theme}"><td>theme</td><td><a th:utext="${tenant.theme}" th:attr="href=${tenant.theme}"></a></td></tr>
         <tr th:if="${tenant.logo}"><td>logo</td><td><a th:utext="${tenant.logo}" th:attr="href=${tenant.logo}"></a></td></tr>
         <tr th:if="${tenant.favicon}"><td>favicon</td><td><a th:utext="${tenant.favicon}" th:attr="href=${tenant.favicon}"></a></td></tr>

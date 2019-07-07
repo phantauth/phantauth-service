@@ -18,8 +18,7 @@
 
     <div class="container before-login mt-3" style="display: none;">
       <p>OpenID Connect authentication test page for <strong th:utext="${tenant.name}"></strong> (<span th:utext="${tenant.sub}"></span>) tenant.
-        You can try how authentication works for this tenant. After successfull authentication you will see returned OIDC claims in a user
-        profile form. The claims returned is depends on the tenants user data source/generator.
+        This tenant allows you to see how the OpenID Connect authentication works. After successful authentication, you’ll see a user profile page, where the claims from the IDToken appear. The number of returned claims depends on the random generator used by the tenant.
       </p>
     </div>
 
@@ -121,7 +120,7 @@
 
     <div class="container before-login mt-3" style="display: none;">
       <p>User Generator test page for <strong th:utext="${tenant.name}"></strong> (<span th:utext="${tenant.sub}"></span>) tenant.
-        You can try user generator for this tenant. 
+        The generate button allows you to generate a new random user. Use the Login name or blank field to specify the login name of the user to be generated. If the login name is provided, the user will be generated on the basis of the given login name. Otherwise, you can generate a new user every time you click on generate.
       </p>
     </div>
 
