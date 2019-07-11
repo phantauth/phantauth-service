@@ -6,6 +6,7 @@ import com.github.phantauth.core.Views;
 import com.github.phantauth.exception.ConfigurationException;
 import com.github.phantauth.exception.PhantAuthException;
 import com.google.common.base.CaseFormat;
+import com.google.common.base.Strings;
 import com.nimbusds.oauth2.sdk.ErrorObject;
 import com.nimbusds.oauth2.sdk.http.CommonContentTypes;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
@@ -14,7 +15,9 @@ import org.apache.commons.lang3.StringUtils;
 
 import javax.mail.internet.ContentType;
 import javax.mail.internet.ParseException;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.net.URI;
 
 public class Response {
 
@@ -90,4 +93,11 @@ public class Response {
         response.setContent(error.toJSONObject().toJSONString());
         return response;
     }
+
+    public static HTTPResponse redirect(final URI uri, final String subject) {
+        final HTTPResponse response = new HTTPResponse(Strings.isNullOrEmpty(subject) || subject.charAt(0) == ';' ? HttpServletResponse.SC_MOVED_TEMPORARILY : HttpServletResponse.SC_MOVED_PERMANENTLY);
+        response.setLocation(uri);
+        return response;
+    }
+
 }
