@@ -23,7 +23,7 @@ public class RestModule {
 
     @Provides
     @ElementsIntoSet
-    static Set<AbstractServlet> provideOtherServlets(final IndexServlet index, final MeServlet me, final TestServlet test) {
-        return ImmutableSet.of(index, me, test);
+    static Set<AbstractServlet> provideOtherServlets(final IndexServlet index, final MeServlet me, final TestServlet test, final AvatarServlet avatar, final LogoServlet logo) {
+        return ImmutableSet.of(index, me, test, avatar, logo);
     }
 }
