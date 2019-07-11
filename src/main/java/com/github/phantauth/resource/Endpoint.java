@@ -22,8 +22,8 @@ public enum Endpoint {
     AUTHORIZATION("/auth/authorize/*"),
     TOKEN("/auth/token/*"),
     USERINFO("/auth/userinfo/*"),
-    AVATAR("/avatar/*"),
-    LOGO("/logo/*"),
+    AVATAR("/img/avatar/*"),
+    LOGO("/img/logo/*"),
     ME("/me/*") {
         @Override
         public String toProfile(String issuer, String subject) {

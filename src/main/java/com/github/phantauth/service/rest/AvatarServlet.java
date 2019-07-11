@@ -13,7 +13,7 @@ import java.util.Random;
 @Singleton
 public class AvatarServlet extends AbstractImageServlet {
 
-    private static final String AVATAR_FORMAT = IMAGE_URL_PREFIX + "/%s/%s.jpg";
+    private static final String AVATAR_FORMAT = IMAGE_URL_PREFIX + "/avatar/%s/%s.jpg";
     private static final int AVATAR_MAX = 3299;
 
     @Inject
