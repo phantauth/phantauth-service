@@ -32,7 +32,7 @@ abstract class AbstractImageServlet extends AbstractServlet {
     protected HTTPResponse handleGet(HTTPRequest req) {
         final Param param = Param.build(req, endpoint);
         final Name name = Name.parse(param.getSubject()).ensureAuthority(faker.name()::username);
-        final Random random = new Random(Hashes.hashSeed(name.getUserInfo()));
+        final Random random = new Random(Hashes.hashSeed(name.getRaw()));
 
         final String location = getLocation(name, random);
 
