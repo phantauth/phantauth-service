@@ -14,6 +14,8 @@ import com.nimbusds.oauth2.sdk.http.HTTPResponse;
 import com.nimbusds.oauth2.sdk.http.ServletUtils;
 import com.nimbusds.oauth2.sdk.util.URLUtils;
 import net.minidev.json.JSONObject;
+import org.apache.commons.lang3.StringUtils;
+import org.apache.http.util.TextUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
@@ -58,6 +60,9 @@ public abstract class AbstractServlet extends HttpServlet {
 
     private HTTPRequest wrap(final HttpServletRequest servletRequest) throws IOException {
         final HTTPRequest request = ServletUtils.createHTTPRequest(servletRequest);
+
+        // "Be conservative in what you send, be liberal in what you accept"
+        request.setAuthorization(StringUtils.capitalize(request.getAuthorization()));
 
         final String cookie;
         if (!request.getQueryParameters().containsKey(TokenKind.LOGIN.getName())) {
