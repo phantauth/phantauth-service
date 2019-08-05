@@ -15,7 +15,6 @@ import com.nimbusds.oauth2.sdk.http.ServletUtils;
 import com.nimbusds.oauth2.sdk.util.URLUtils;
 import net.minidev.json.JSONObject;
 import org.apache.commons.lang3.StringUtils;
-import org.apache.http.util.TextUtils;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServlet;
