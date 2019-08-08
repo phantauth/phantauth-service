@@ -48,9 +48,7 @@ public class TokenServlet extends AbstractServlet {
         try {
             request = TokenRequest.parse(req);
         } catch (ParseException e) {
-            final HTTPResponse response = new HTTPResponse(OAuth2Error.INVALID_REQUEST.getHTTPStatusCode());
-            response.setContent(OAuth2Error.INVALID_REQUEST.toJSONObject().toString());
-            return response;
+            return toResponse(e);
         }
         return flow.handle(request).toHTTPResponse();
     }
