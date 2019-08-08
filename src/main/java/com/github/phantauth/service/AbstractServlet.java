@@ -202,7 +202,7 @@ public abstract class AbstractServlet extends HttpServlet {
     protected HTTPResponse toResponse(final ParseException exception) {
         logger.atInfo().atMostEvery(1, TimeUnit.MINUTES).withCause(exception).log(exception.getMessage());
         final HTTPResponse response = new HTTPResponse(OAuth2Error.INVALID_REQUEST.getHTTPStatusCode());
-        ErrorObject error = new ErrorObject(OAuth2Error.INVALID_REQUEST.getCode(), exception.toString(), OAuth2Error.INVALID_REQUEST.getHTTPStatusCode() );
+        ErrorObject error = new ErrorObject(OAuth2Error.INVALID_REQUEST.getCode(), exception.getMessage(), OAuth2Error.INVALID_REQUEST.getHTTPStatusCode() );
         response.setContent(error.toJSONObject().toString());
         return response;
     }
