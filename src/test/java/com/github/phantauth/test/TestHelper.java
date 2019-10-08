@@ -9,6 +9,7 @@ import com.nimbusds.jose.JWSAlgorithm;
 import com.nimbusds.oauth2.sdk.GrantType;
 import com.nimbusds.oauth2.sdk.ResponseMode;
 import com.nimbusds.oauth2.sdk.ResponseType;
+import com.nimbusds.oauth2.sdk.Scope;
 import com.nimbusds.oauth2.sdk.auth.ClientAuthenticationMethod;
 import com.nimbusds.oauth2.sdk.id.Issuer;
 import com.nimbusds.openid.connect.sdk.OIDCResponseTypeValue;
@@ -66,6 +67,7 @@ public class TestHelper  {
         instance.setGrantTypes(ImmutableList.of(GrantType.AUTHORIZATION_CODE, GrantType.IMPLICIT, GrantType.PASSWORD, GrantType.REFRESH_TOKEN));
         instance.setClaims(ImmutableList.of("sub", "name", "given_name", "family_name", "middle_name", "nickname", "preferred_username", "profile", "picture", "website", "email", "email_verified", "gender", "birthdate", "zoneinfo", "locale", "phone_number", "phone_number_verified", "address", "updated_at", "me", "uid", "tenant"));
         instance.setSupportsClaimsParams(true);
+        instance.setScopes(new Scope("openid profile email phone address uid"));
 
         instance.setIDTokenJWSAlgs(Collections.singletonList(JWSAlgorithm.RS256));
         instance.setUserInfoJWSAlgs(Collections.singletonList(JWSAlgorithm.RS256));
