@@ -113,13 +113,25 @@ public class ProtectedResourceFlow extends AbstractFlow {
     public static OIDCClientMetadata newClientMetadata(final Client client) {
         final OIDCClientMetadata meta = new OIDCClientMetadata();
 
-        meta.setSoftwareID(new SoftwareID(client.getSoftwareId()));
-        meta.setSoftwareVersion(new SoftwareVersion(client.getSoftwareVersion()));
+        if ( client.getSoftwareId() != null ) {
+            meta.setSoftwareID(new SoftwareID(client.getSoftwareId()));
+        }
+        if ( client.getSoftwareVersion() != null ) {
+            meta.setSoftwareVersion(new SoftwareVersion(client.getSoftwareVersion()));
+        }
         meta.setName(client.getClientName());
-        meta.setURI(URI.create(client.getClientUri()));
-        meta.setLogoURI(URI.create(client.getLogoUri()));
-        meta.setPolicyURI(URI.create(client.getPolicyUri()));
-        meta.setTermsOfServiceURI(URI.create(client.getTosUri()));
+        if ( client.getClientUri() != null ) {
+            meta.setURI(URI.create(client.getClientUri()));
+        }
+        if ( client.getLogoUri() != null ) {
+            meta.setLogoURI(URI.create(client.getLogoUri()));
+        }
+        if ( client.getPolicyUri() != null ) { 
+            meta.setPolicyURI(URI.create(client.getPolicyUri()));
+        }
+        if ( client.getTosUri() != null ) {
+            meta.setTermsOfServiceURI(URI.create(client.getTosUri()));
+        }
         meta.setScope(client.getScope() == null ? null : new Scope(client.getScope()));
         meta.setEmailContacts(client.getContacts());
 
