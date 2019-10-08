@@ -11,6 +11,7 @@ import com.github.phantauth.service.AbstractServlet;
 import com.github.phantauth.service.TemplateManager;
 import com.github.phantauth.token.StorageToken;
 import com.github.phantauth.token.UserTokenFactory;
+import com.google.common.flogger.FluentLogger;
 import com.nimbusds.oauth2.sdk.*;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
 import com.nimbusds.oauth2.sdk.http.HTTPResponse;
@@ -42,6 +43,8 @@ public class AuthorizationServlet extends AbstractServlet {
     private static final String PARAM_CLAIMS = "claims";
     private static final String PARAM_LOGIN_HINT = "login_hint";
     private static final String CONSENT_CANCEL = "cancel";
+
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     private final AuthorizationFlow flow;
     private final TemplateManager templateManager;
@@ -120,9 +123,7 @@ public class AuthorizationServlet extends AbstractServlet {
                 request = AuthenticationRequest.parse(req);
             }
         } catch (ParseException e) {
-            final HTTPResponse response = new HTTPResponse(OAuth2Error.INVALID_REQUEST.getHTTPStatusCode());
-            response.setContent(OAuth2Error.INVALID_REQUEST.toJSONObject().toString());
-            return response;
+            return toResponse(e);
         }
 
         if (CONSENT_CANCEL.equals(request.getCustomParameter(PARAM_CONSENT))) {
