@@ -101,6 +101,7 @@ public interface Client {
     @JsonProperty(Property.CLIENT_URI)
     @ApiModelProperty(value = "URL string of a web page providing information about the client. If present, the service SHOULD display this URL to the end-user in a clickable fashion.  It is RECOMMENDED that clients always send this field.  The value of this field MUST point to a valid web page.  The value of this field MAY be internationalized, as described in Section 2.2. ")
     @JsonView(Views.Standard.class)
+    @Nullable
     String getClientUri();
 
     /**
@@ -142,6 +143,7 @@ public interface Client {
     @JsonProperty(Property.TOS_URI)
     @ApiModelProperty(value = "URL string that points to a human-readable terms of service document for the client that describes a contractual relationship between the end-user and the client that the end-user accepts when authorizing the client.  The authorization service SHOULD display this URL to the end-user if it is provided.  The value of this field MUST point to a valid web page.  The value of this field MAY be internationalized, as described in Section 2.2. ")
     @JsonView(Views.Standard.class)
+    @Nullable
     String getTosUri();
 
     /**
@@ -152,6 +154,7 @@ public interface Client {
     @JsonProperty(Property.POLICY_URI)
     @ApiModelProperty(value = "URL string that points to a human-readable privacy policy document that describes how the deployment organization collects, uses, retains, and discloses personal data.  The authorization service SHOULD display this URL to the end-user if it is provided.  The value of this field MUST point to a valid web page.  The value of this field MAY be internationalized, as described in Section 2.2. ")
     @JsonView(Views.Standard.class)
+    @Nullable
     String getPolicyUri();
 
     /**
@@ -182,6 +185,7 @@ public interface Client {
     @JsonProperty(Property.SOFTWARE_ID)
     @ApiModelProperty(value = "A unique identifier string (e.g., a Universally Unique Identifier (UUID)) assigned by the client developer or software publisher used by registration endpoints to identify the client software to be dynamically registered.  Unlike \"client_id\", which is issued by the authorization service and SHOULD vary between instances, the \"software_id\" SHOULD remain the same for all instances of the client software.  The \"software_id\" SHOULD remain the same across multiple updates or versions of the same piece of software.  The value of this field is not intended to be human readable and is usually opaque to the client and authorization service. ")
     @JsonView(Views.Standard.class)
+    @Nullable
     String getSoftwareId();
 
     /**
@@ -192,10 +196,12 @@ public interface Client {
     @JsonProperty(Property.SOFTWARE_VERSION)
     @ApiModelProperty(value = "A version identifier string for the client software identified by \"software_id\".  The value of the \"software_version\" SHOULD change on any update to the client software identified by the same \"software_id\".  The value of this field is intended to be compared using string equality matching and no other comparison semantics are defined by this specification.  The value of this field is outside the scope of this specification, but it is not intended to be human readable and is usually opaque to the client and authorization service.  The definition of what constitutes an update to client software that would trigger a change to this value is specific to the software itself and is outside the scope of this specification. ")
     @JsonView(Views.Standard.class)
+    @Nullable
     String getSoftwareVersion();
 
     @JsonProperty(Property.LOGO_EMAIL)
     @JsonView(Views.Phantom.class)
+    @Nullable
     String getLogoEmail();
 
 

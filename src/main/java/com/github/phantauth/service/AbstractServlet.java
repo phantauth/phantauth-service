@@ -7,6 +7,9 @@ import com.github.phantauth.resource.Name;
 import com.github.phantauth.resource.TenantRepository;
 import com.github.phantauth.resource.Endpoint;
 import com.google.common.base.Strings;
+import com.google.common.flogger.FluentLogger;
+import com.nimbusds.oauth2.sdk.ErrorObject;
+import com.nimbusds.oauth2.sdk.OAuth2Error;
 import com.nimbusds.oauth2.sdk.ParseException;
 import com.nimbusds.oauth2.sdk.http.CommonContentTypes;
 import com.nimbusds.oauth2.sdk.http.HTTPRequest;
@@ -23,12 +26,15 @@ import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.URI;
 import java.util.Map;
+import java.util.concurrent.TimeUnit;
 
 public abstract class AbstractServlet extends HttpServlet {
 
     protected static final String PARAM_TENANT = "tenant";
     protected static final String PARAM_ISSUER = "issuer";
     protected static final String PARAM_UI_LOCALES = "ui_locales";
+
+    private static final FluentLogger logger = FluentLogger.forEnclosingClass();
 
     protected final Endpoint endpoint;
     protected final TenantRepository tenantRepository;
@@ -192,5 +198,14 @@ public abstract class AbstractServlet extends HttpServlet {
     protected HTTPResponse cache(final HTTPResponse response, final String subject, final int maxage) {
         return cache(response, subject == null || subject.charAt(0) == ';' ? 0 : maxage);
     }
+
+    protected HTTPResponse toResponse(final ParseException exception) {
+        logger.atInfo().atMostEvery(1, TimeUnit.MINUTES).withCause(exception).log(exception.getMessage());
+        final HTTPResponse response = new HTTPResponse(OAuth2Error.INVALID_REQUEST.getHTTPStatusCode());
+        ErrorObject error = new ErrorObject(OAuth2Error.INVALID_REQUEST.getCode(), exception.getMessage(), OAuth2Error.INVALID_REQUEST.getHTTPStatusCode() );
+        response.setContent(error.toJSONObject().toString());
+        return response;
+    }
+
 }
 
