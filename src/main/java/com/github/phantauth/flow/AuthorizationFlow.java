@@ -114,6 +114,8 @@ public class AuthorizationFlow {
         final OIDCProviderMetadata meta = new OIDCProviderMetadata(new Issuer(tenant.getIssuer()), Collections.singletonList(SubjectType.PUBLIC), Endpoint.JWKS.toURI(tenant.getIssuer()));
         fillCommonConfiguration(tenant, meta);
 
+        meta.setScopes(new Scope("openid profile email phone address uid"));
+
         meta.setClaimTypes(Collections.singletonList(ClaimType.NORMAL));
         meta.setClaims(Arrays.stream(Claim.values()).map(Claim::getName).collect(Collectors.toList()));
         meta.setSupportsClaimsParams(true);
