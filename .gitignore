@@ -4,6 +4,7 @@
 .DS_Store
 
 .classpath
+bin
 
 node_modules
 
