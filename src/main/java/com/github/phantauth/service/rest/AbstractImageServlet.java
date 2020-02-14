@@ -19,7 +19,7 @@ import java.util.concurrent.TimeUnit;
 
 abstract class AbstractImageServlet extends AbstractServlet {
 
-    static final String IMAGE_URL_PREFIX = "https://img." + Config.DEFAULT_DOMAIN;
+    static final String IMAGE_URL_PREFIX = "https://image." + Config.DEFAULT_DOMAIN;
     static final Faker faker = new Faker();
 
     AbstractImageServlet(final Endpoint endpoint, final TenantRepository tenantRepository) {

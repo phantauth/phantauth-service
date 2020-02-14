@@ -12,7 +12,7 @@ import java.util.Random;
 @Singleton
 public class LogoServlet extends AbstractImageServlet {
 
-    private static final String LOGO_FORMAT = IMAGE_URL_PREFIX + "/logo/%s.png";
+    private static final String LOGO_FORMAT = IMAGE_URL_PREFIX + "/logo/icon/%s.png";
     private static final int LOGO_MAX = 4099;
 
     @Inject

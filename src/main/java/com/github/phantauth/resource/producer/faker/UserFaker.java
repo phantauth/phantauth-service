@@ -69,16 +69,16 @@ public class UserFaker extends AbstractFaker<User> {
 
         private static final Pattern HAS_FULL_NAME = Pattern.compile("^~?\\p{L}+[ .]\\p{L}+([ .]\\p{L}+)?$");
         private static final String PICTURE_FORMAT = "https://www.gravatar.com/avatar/%s?s=256&d=%s";
-        private static final String AVATARS_PREFIX = "https://avatars.";
-        private static final String PICTURE_AI_FORMAT = AVATARS_PREFIX + Config.DEFAULT_DOMAIN + "/ai/%s/%s.jpg";
+        private static final String AVATARS_PREFIX = "https://image.";
+        private static final String PICTURE_AI_FORMAT = AVATARS_PREFIX + Config.DEFAULT_DOMAIN + "/avatar/ai/%s/%s.jpg";
         private static final int PICTURE_AI_MAX = 3299;
-        private static final String PICTURE_PHOTO_FORMAT = AVATARS_PREFIX + Config.DEFAULT_DOMAIN + "/photo/%s/%s.jpg";
+        private static final String PICTURE_PHOTO_FORMAT = AVATARS_PREFIX + Config.DEFAULT_DOMAIN + "/avatar/photo/%s/%s.jpg";
         private static final int PICTURE_PHOTO_MAX = 299;
-        private static final String PICTURE_DICE_FORMAT = AVATARS_PREFIX + Config.DEFAULT_DOMAIN + "/dice/%s/%s.png";
+        private static final String PICTURE_DICE_FORMAT = AVATARS_PREFIX + Config.DEFAULT_DOMAIN + "/avatar/dice/%s/%s.png";
         private static final int PICTURE_DICE_MAX = 299;
-        private static final String PICTURE_SKETCH_FORMAT = AVATARS_PREFIX + Config.DEFAULT_DOMAIN + "/sketch/%s/%s.jpg";
+        private static final String PICTURE_SKETCH_FORMAT = AVATARS_PREFIX + Config.DEFAULT_DOMAIN + "/avatar/sketch/%s/%s.jpg";
         private static final int PICTURE_SKETCH_MAX = 999;
-        private static final String PICTURE_KITTEN_FORMAT = AVATARS_PREFIX + Config.DEFAULT_DOMAIN + "/kitten/%s.jpg";
+        private static final String PICTURE_KITTEN_FORMAT = AVATARS_PREFIX + Config.DEFAULT_DOMAIN + "/logo/kitten/%s.jpg";
         private static final int PICTURE_KITTEN_MAX = 299;
         private static final String PICTURE_ADORABLE_FORMAT = "https://api.adorable.io/avatars/256/%s.png";
 
@@ -209,11 +209,7 @@ public class UserFaker extends AbstractFaker<User> {
                     defaultPicture = String.format(PICTURE_SKETCH_FORMAT, getGender(), fake.randomHashidBetween(0, PICTURE_SKETCH_MAX));
                     break;
                 case DICE:
-                    if (getGender().equalsIgnoreCase(GenderResolver.Gender.UNKNOWN.toString())) {
-                        defaultPicture = Flags.Avatar.RETRO.format();
-                    } else {
-                        defaultPicture = String.format(PICTURE_DICE_FORMAT, getGender(), fake.randomHashidBetween(0, PICTURE_DICE_MAX));
-                    }
+                    defaultPicture = String.format(PICTURE_DICE_FORMAT, getGender(), fake.randomHashidBetween(0, PICTURE_DICE_MAX));
                     break;
                 case KITTEN:
                     defaultPicture = String.format(PICTURE_KITTEN_FORMAT, fake.randomHashidBetween(0, PICTURE_KITTEN_MAX));

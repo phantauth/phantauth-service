@@ -15,7 +15,8 @@ public class Hashes {
         // no instances
     }
 
-    private static final int HASHIDS_MIN_LENGTH = 8;
+    private static final int HASHIDS_MIN_LENGTH = 10;
+    private static final String HASHIDS_SALT_ENV = "HASHIDS_SALT";
 
     @SuppressWarnings("UnstableApiUsage")
     public static int hashSeed(final String value) {
@@ -45,7 +46,7 @@ public class Hashes {
     }
 
     public static String hashids(final int value) {
-        return new Hashids(null, HASHIDS_MIN_LENGTH).encode(value);
+        return new Hashids(System.getenv(HASHIDS_SALT_ENV), HASHIDS_MIN_LENGTH).encode(value);
     }
 
     @SuppressWarnings("UnstableApiUsage")

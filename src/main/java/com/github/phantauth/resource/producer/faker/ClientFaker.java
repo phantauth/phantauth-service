@@ -35,9 +35,9 @@ public class ClientFaker extends AbstractFaker<Client> {
 
     static class ClientGen extends ClientBean {
 
-        private static final String LOGO_ICON_FORMAT = "https://avatars." + Config.DEFAULT_DOMAIN + "/icon/%s.png";
+        private static final String LOGO_ICON_FORMAT = "https://image." + Config.DEFAULT_DOMAIN + "/logo/icon/%s.png";
         private static final int LOGO_ICON_MAX = 4099;
-        private static final String LOGO_FRACTAL_FORMAT = "https://avatars." + Config.DEFAULT_DOMAIN + "/fractal/%s.jpg";
+        private static final String LOGO_FRACTAL_FORMAT = "https://avatars." + Config.DEFAULT_DOMAIN + "/logo/fractal/%s.jpg";
         private static final int LOGO_FRACTAL_MAX = 1400;
         private static final String PICTURE_FORMAT = "https://www.gravatar.com/avatar/%s?s=256&d=%s";
         private static final String VERSION_PATTERN = "#.#.#";
