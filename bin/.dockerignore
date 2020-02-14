@@ -1,22 +1,14 @@
-.hg
-.svn
-.local
-.DS_Store
-
-.classpath
-
 node_modules
 
 lib/core/metadata.js
 lib/core/MetadataBlog.js
 
 website/translated_docs
-website/build/
+website/build
 website/yarn.lock
 website/node_modules
 website/i18n/*
 
-/*.code-workspace
 /*.iml
 /*.ipr
 /*.iws
@@ -32,7 +24,3 @@ website/i18n/*
 /app/debug
 /captures
 .externalNativeBuild
-
-.project
-.settings/**
-
