@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head th:include="layout :: head('Login')"/>
+<body th:attr="data-issuer=${tenant.issuer}">
+    <nav th:replace="layout :: navbar('')"></nav>
+
+    <div th:if="${tenant.flag.size.default}" class="container">
+        <div class="col-sm-12 col-md-8 offset-md-2 mt-3">
+            <h1 class="text-center">Login</h1>
+            <form class="login-form">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input class="form-control login-history" id="name" aria-describedby="nameHelp" placeholder="Login name" list="history"
+                        th:attr="value=${request.loginHint}">
+                    <datalist id="history" class="login-history"></datalist>
+                    <small id="nameHelp" class="form-text text-muted">Login name or full name or email address (blank
+                        for random)
+                    </small>
+                </div>
+                <div th:if="${tenant.factory == null && tenant.flag.avatar.default}" class="row">
+                    <div class="form-group col">
+                        <label for="avatar">Avatar</label>
+                        <select class="form-control" id="avatar" name="avatar" aria-describedby="avatarHelp">
+                            <option value="">ai</option>
+                            <option value=";sketch">sketch</option>
+                            <option value=";photo">photo</option>
+                            <option value=";dice">dice</option>
+                            <option value=";kitten">kitten</option>
+                            <option value=";adorable">adorable</option>
+                            <option value=";notfound">notfound</option>
+                            <option value=";mp">mp</option>
+                            <option value=";monsterid">monsterid</option>
+                            <option value=";wavatar">wavatar</option>
+                            <option value=";retro">retro</option>
+                            <option value=";robohash">robohash</option>
+                            <option value=";blank">blank</option>
+                            <option value=";noavatar">noavatar</option>
+                        </select>
+                        <small id="avatarHelp" class="form-text text-muted">Default avatar</small>
+                    </div>
+                    <div class="form-group col">
+                        <label for="gender">Gender</label>
+                        <select class="form-control" id="gender" name="gender" aria-describedby="genderHelp">
+                            <option value="">guess</option>
+                            <option value=";male">male</option>
+                            <option value=";female">female</option>
+                            <option value=";nogender">nogender</option>
+                        </select>
+                        <small id="genderHelp" class="form-text text-muted">Override gender detection</small>
+                    </div>
+                    <hr>
+                </div>
+                <div th:if="${tenant.factory == null && ! tenant.flag.avatar.default}" >
+                  <input type="hidden" id="avatar" name="avatar" value="" th:attr="value=${ #strings.prepend(tenant.flag.avatar,';')}" readonly/>
+                  <input type="hidden" id="gender" name="gender" value=""/>
+                </div>
+                <div th:if="${tenant.factory != null}" >
+                  <input type="hidden" id="avatar" name="avatar" value="" readonly/>
+                  <input type="hidden" id="gender" name="gender" value="" readonly/>
+                </div>
+                <div class="row">
+                    <div class="col">
+                        <button class="btn btn-outline-success" id="login" type="submit" title="Continue with selected account">
+                            login
+                        </button>&nbsp;
+                        <button class="btn btn-outline-danger" id="cancel" type="reset" title="Cancel login process"> cancel</button>&nbsp;
+                    </div>
+                </div>
+                <input id="username" name="username" type="hidden" th:attr="value=${user.sub}" />
+            </form>
+            <hr />
+            <p id="user" class="text-right text-muted" style="display: none;"><img id="picture" th:attr="src=${user.picture}"
+                    class="img-sm rounded-circle border" />
+                <span id="fullname" th:utext="${user.name}"></span>
+            </p>
+        </div>
+    </div>
+
+    <div th:if="${! tenant.flag.size.default}" id="team" class="container">
+        <div class="col-sm-12 col-md-6 offset-md-3 mt-3">
+            <h1 class="text-center">Login</h1>
+            <p class="text-right text-muted">
+                <span rv-text="team.name"></span>&nbsp;
+                <img rv-src="team.logo" class="img-sm rounded-circle border" />
+            </p>
+            <form class="login-form">
+                <div id="members" class="list-group-flush" rv-each-member="team.members">
+                    <button type="submit" class="list-group-item list-group-item-action flex-column align-items-start ">
+                        <img rv-src="member.picture" class="img-sm rounded-circle border"/> &nbsp;
+                        <span rv-data-sub="member.sub" rv-data-pass="member.password" rv-text="member.name" class="h5"></span>
+                    </button>
+                </div>
+                <div class="row mt-3">
+                    <button class="btn btn-outline-danger" id="cancel" type="reset" title="Cancel login process"> cancel</button>&nbsp;
+                </div>
+                <input id="username" name="username" type="hidden" />
+                <input id="password" name="password" type="hidden" />
+            </form>
+        </div>
+    </div>
+
+
+    <script th:if="${! tenant.flag.size.default}" type="text/javascript">
+$(function () {
+
+    var name = PhantAuth.tenant.userinfo || "";
+    var flags = PhantAuth.tenant.flags || "";
+    PhantAuth.get("team", name + ";" + flags, function(team) {
+        var bindings = {}
+        bindings['team'] = team;
+        rivets.bind($('#team'), bindings);
+        $('#members button').click(function (event) {
+          $("#username").val($(this).find("span").attr("data-sub"));
+          $("#password").val($(this).find("span").attr("data-pass"));
+        })
+    });
+
+});
+    </script>
+    <script th:if="${! tenant.flag.size.default}" src="https://cdnjs.cloudflare.com/ajax/libs/rivets/0.9.6/rivets.bundled.min.js"></script>
+
+    <script th:if="${tenant.flag.size.default}" type="text/javascript">
+$(function () {
+
+    function buildName() {
+        var name = $("#name").val() || $("#username").val();
+        return ( name && name.indexOf(';') >= 0 ) ? name : (name + $("#avatar").val() + $("#gender").val());
+    }
+
+    function update() {
+        PhantAuth.get("user", buildName(), function (user) {
+            $("#username").val(user.sub);
+            $("#fullname").text(user.name);
+            $("#picture").attr('src', user.picture);
+
+            if ( user.flag.gender ) {
+                $("#gender").val(";" + user.flag.gender);
+            }
+
+            if ( user.flag.avatar ) {
+                $("#avatar").val(";" + user.flag.avatar);
+            }
+
+            if ( ! jQuery.isEmptyObject(user.flag) ) {
+                $("#name").val(user.sub.substring(0,user.sub.indexOf(';')));
+            }
+
+            $("#user").show();
+        });
+    }
+
+    $('#login').click(function() {
+        $("#username").val(buildName());
+    });
+
+    $("#gender").change(function (event) {
+        update();
+    });
+
+    $("#avatar").change(function (event) {
+        update();
+    });
+
+    $("#name").change(function (event) {
+        update();
+    });
+
+    update()
+
+    var wto;
+    $('#name').bind('keydown', function () {
+        clearTimeout(wto);
+        wto = setTimeout(function () {
+            update();
+        }, 1500);
+    });
+});
+    </script>
+    <form th:replace="phantauth :: login"></form>
+</body>
+</html>

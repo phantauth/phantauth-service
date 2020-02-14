@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+
+<head th:fragment="head (title)" th:assert="${!#strings.isEmpty(title)}">
+  <base th:attr="href=${template}" />
+  <title th:utext="${title}"></title>
+
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link th:replace="settings :: favicon"/>
+
+  <link th:replace="settings :: theme"/>
+  <link rel="stylesheet" href="phantauth.css" crossorigin="anonymous"/>
+  <script src="https://code.jquery.com/jquery-3.3.1.min.js" crossorigin="anonymous"></script>
+  <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.2.1/js/bootstrap.min.js" crossorigin="anonymous"></script>
+</head>
+
+<body>
+  <div th:fragment="navbar (title)">
+
+    <nav class="navbar navbar-dark bg-primary sticky-top">
+      <a class="navbar-brand" th:attr="href=${tenant.website}"><img th:replace="settings :: logo"/>&nbsp;<span th:replace="settings :: name"/></a>
+      <span class="navbar-text" th:utext="${title}" th:if="${title}"></span>
+    </nav>
+  </div>
+</body>
+
+</html>

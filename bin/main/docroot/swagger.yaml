@@ -1,0 +1,713 @@
+swagger: "2.0"
+info:
+  description: |
+    A free, open-source API for generating random OpenID Connect accounts and provide authentication for them.
+    Like Lorem Ipsum, but for OpenID Connect.
+  version: "1.0.0"
+  title: "PhantAuth"
+  contact:
+    email: "szkiba@protonmail.com"
+  license:
+    name: "Apache 2.0"
+    url: "http://www.apache.org/licenses/LICENSE-2.0.html"
+host: "phantauth.herokuapp.com"
+basePath: "/"
+tags:
+- name: "user"
+  description: "Generate OpenID Connect user accounts and related data"
+- name: "client"
+  description: "Generate OAuth 2 clients and related data"
+schemes:
+- "https"
+externalDocs:
+  description: "Find out more about PhantAuth"
+  url: "https://phantauth.github.io"
+
+paths:
+  /user/{username}:
+    get:
+      tags:
+      - "user"
+      summary: "Generate OpenID Connect user account"
+      description: |
+        Generate random user based on user's login name (username path parameter). Generated user claims are random
+        but deterministic: every time passing same username the resulting account properties will be same.
+      operationId: "getUser"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "User's login name"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/User"
+
+  /user/{username}/token/{kind}:
+    get:
+      tags:
+      - "user"
+      summary: "Generate various tokens for given user"
+      description: |
+        Generate access_token, refresh_token, authorization_code, id_token.
+      operationId: "getUserToken"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "username"
+        in: "path"
+        description: "User's login name"
+        required: true
+        type: "string"
+      - name: "kind"
+        in: "path"
+        description: "Token kind"
+        required: true
+        type: "string"
+        enum:
+          - access_token
+          - refresh_token
+          - authorization_code
+          - id_token
+          - selfie_token
+      - name: "scope"
+        in: "query"
+        description: "OpenID Connect scope value"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: string
+
+  /user:
+    get:
+      tags:
+      - "user"
+      summary: "Generate OpenID Connect user account in batch mode"
+      description: |
+        Generate random login names and then generate account data for each one.
+      operationId: "listUsers"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "seed"
+        in: "query"
+        description: "Random seed used for generating login names"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Number of generated users"
+        required: false
+        type: "integer"
+        format: "int32"
+        default: "1"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/User"
+    post:
+      tags:
+      - "user"
+      summary: "Generate OpenID Connect user account from user supplied data"
+      description: |
+        Generate random login names and then generate account data for each one.
+      operationId: "registerUser"
+      produces:
+      - "text/plain"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "user"
+        in: "body"
+        description: "User data"
+        required: true
+        schema:
+          $ref: "#/definitions/User"
+
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: string
+            
+  /client/{client_id}:
+    get:
+      tags:
+      - "client"
+      summary: "Generate OAuth 2 client"
+      description: |
+        Generate random client based on client id (client_id path parameter). Generated client properties are random
+        but deterministic: every time passing same client id the resulting client properties will be same.
+      operationId: "getClient"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "client_id"
+        in: "path"
+        description: "The client id"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            $ref: "#/definitions/Client"
+
+  /client/{client_id}/token/{kind}:
+    get:
+      tags:
+      - "client"
+      summary: "Generate various tokens for given client"
+      description: |
+        Generate registration_access_token.
+      operationId: "getClientToken"
+      produces:
+      - "text/plain"
+      parameters:
+      - name: "client_id"
+        in: "path"
+        description: "The client id"
+        required: true
+        type: "string"
+      - name: "kind"
+        in: "path"
+        description: "Token kind"
+        required: true
+        type: "string"
+        enum:
+        - registration_access_token
+        - selfie_token
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: string
+
+  /client:
+    get:
+      tags:
+      - "client"
+      summary: "Generate OAuth 2 clients in batch mode"
+      description: |
+        Generate random client ids and then generate client properties for each one.
+      operationId: "listClients"
+      produces:
+      - "application/json"
+      parameters:
+      - name: "seed"
+        in: "query"
+        description: "Random seed used for generating client ids"
+        required: false
+        type: "string"
+      - name: "limit"
+        in: "query"
+        description: "Number of generated clients"
+        required: false
+        type: "integer"
+        format: "int32"
+        default: "1"
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: array
+            items:
+              $ref: "#/definitions/Client"
+    post:
+      tags:
+      - "client"
+      summary: "Generate client from user supplied data"
+      description: |
+        Generate client.
+      operationId: "registerClient"
+      produces:
+      - "text/plain"
+      consumes:
+      - "application/json"
+      parameters:
+      - name: "client"
+        in: "body"
+        description: "Client data"
+        required: true
+        schema:
+          $ref: "#/definitions/Client"
+
+      responses:
+        200:
+          description: "successful operation"
+          schema:
+            type: string
+
+definitions:
+  Claims:
+    type: "object"
+    description: |
+      Standard OpenID Connect Claims
+    externalDocs:
+      description: "5.1. Standard Claims"
+      url: "http://openid.net/specs/openid-connect-core-1_0.html#StandardClaims"
+    properties:
+      sub:
+        description: |
+          Subject - Identifier for the End-User at the Issuer.
+        type: "string"
+      name:
+        description: |
+          End-User's full name in displayable form including all name parts, possibly including titles and suffixes,
+          ordered according to the End-User's locale and preferences.
+        type: "string"
+      given_name:
+        description: |
+          Given name(s) or first name(s) of the End-User. Note that in some cultures, people can have multiple given names;
+          all can be present, with the names being separated by space characters.
+        type: "string"
+      family_name:
+        description: |
+          Surname(s) or last name(s) of the End-User. Note that in some cultures, people can have multiple family names
+          or no family name; all can be present, with the names being separated by space characters.
+        type: "string"
+      middle_name:
+        description: |
+          Middle name(s) of the End-User. Note that in some cultures, people can have multiple middle names;
+          all can be present, with the names being separated by space characters. Also note that in some cultures, middle names are not used.
+        type: "string"
+      nickname:
+        description: |
+          Casual name of the End-User that may or may not be the same as the given_name.
+          For instance, a nickname value of Mike might be returned alongside a given_name value of Michael.
+        type: "string"
+      preferred_username:
+        description: |
+          Shorthand name by which the End-User wishes to be referred to at the RP, such as janedoe or j.doe.
+          This value MAY be any valid JSON string including special characters such as @, /, or whitespace.
+        type: "string"
+      profile:
+        description: |
+          URL of the End-User's profile page. The contents of this Web page SHOULD be about the End-User.
+        type: string
+      picture:
+        description: |
+          URL of the End-User's profile picture. This URL MUST refer to an image file (for example, a PNG, JPEG, or GIF image file),
+          rather than to a Web page containing an image.
+          Note that this URL SHOULD specifically reference a profile photo of the End-User suitable for displaying when describing the End-User,
+          rather than an arbitrary photo taken by the End-User.
+        type: "string"
+      website:
+        description: |
+          URL of the End-User's Web page or blog. This Web page SHOULD contain information published by the End-User or
+          an organization that the End-User is affiliated with.
+        type: string
+      email:
+        description: |
+          End-User's preferred e-mail address. Its value MUST conform to the RFC 5322 [RFC5322] addr-spec syntax.
+        type: "string"
+      email_verified:
+        description: |
+          True if the End-User's e-mail address has been verified; otherwise false.
+          When this Claim Value is true, this means that the OP took affirmative steps to ensure that this e-mail address
+          was controlled by the End-User at the time the verification was performed.
+          The means by which an e-mail address is verified is context-specific, and dependent upon the trust framework
+          or contractual agreements within which the parties are operating.
+        type: boolean
+      gender:
+        description: |
+          End-User's gender. Values defined by this specification are female and male.
+          Other values MAY be used when neither of the defined values are applicable.
+        type: "string"
+      birthdate:
+        description: |
+          End-User's birthday, represented as an ISO 8601:2004 [ISO8601‑2004] YYYY-MM-DD format.
+          The year MAY be 0000, indicating that it is omitted. To represent only the year, YYYY format is allowed.
+          Note that depending on the underlying platform's date related function, providing just year can result in varying month and day,
+          so the implementers need to take this factor into account to correctly process the dates.
+        type: "string"
+      zoneinfo:
+        description: |
+          String from zoneinfo [zoneinfo] time zone database representing the End-User's time zone. For example, Europe/Paris or America/Los_Angeles.
+        type: "string"
+      locale:
+        description: |
+          End-User's locale, represented as a BCP47 [RFC5646] language tag.
+          This is typically an ISO 639-1 Alpha-2 [ISO639‑1] language code in lowercase and an ISO 3166-1 Alpha-2 [ISO3166‑1]
+          country code in uppercase, separated by a dash. For example, en-US or fr-CA. As a compatibility note, some implementations
+          have used an underscore as the separator rather than a dash, for example, en_US
+        type: "string"
+      phone_number:
+        description: |
+          End-User's preferred telephone number. E.164 [E.164] is RECOMMENDED as the format of this Claim,
+          for example, +1 (425) 555-1212 or +56 (2) 687 2400. If the phone number contains an extension, it is RECOMMENDED
+           that the extension be represented using the RFC 3966 [RFC3966] extension syntax, for example, +1 (604) 555-1234;ext=5678.
+        type: "string"
+      phone_number_verified:
+        description: |
+          True if the End-User's phone number has been verified; otherwise false. When this Claim Value is true, this means
+          that the OP took affirmative steps to ensure that this phone number was controlled by the End-User at the time the verification was performed.
+          The means by which a phone number is verified is context-specific, and dependent upon the trust framework or contractual agreements
+          within which the parties are operating. When true, the phone_number Claim MUST be in E.164 format and any extensions MUST be represented in RFC 3966 format.
+        type: boolean
+      updated_at:
+        description: |
+          Time the End-User's information was last updated.
+          Its value is a JSON number representing the number of seconds from 1970-01-01T0:0:0Z as measured in UTC until the date/time.
+        type: integer
+        format: int64
+      address:
+        type: object
+        description: |
+          End-User's preferred postal address.
+        $ref: "#/definitions/Address"
+
+  User:
+    description: |
+      An OpenID Connect compatible user account data, in addition to standard claims, contains user's password.
+    allOf:
+      - $ref: "#/definitions/Claims"
+      - properties:
+          password:
+            description: User's generated password
+            type: "string"
+
+  Address:
+    type: object
+    description: |
+      The Address represents a physical mailing address. Implementations MAY return only a subset of the fields of an address,
+      depending upon the information available and the End-User's privacy preferences. For example, the country and region might
+      be returned without returning more fine-grained address information.
+    externalDocs:
+      description: "5.1.1. Address Claim"
+      url: "http://openid.net/specs/openid-connect-core-1_0.html#AddressClaim"
+    properties:
+      formatted:
+        type: string
+        description: "Full mailing address, formatted for display or use on a mailing label. This field MAY contain multiple lines, separated by newlines. Newlines can be represented either as a carriage return/line feed pair or as a single line feed character."
+      street_address:
+        type: string
+        description: "Full street address component, which MAY include house number, street name, Post Office Box, and multi-line extended street address information. This field MAY contain multiple lines, separated by newlines. Newlines can be represented either as a carriage return/line feed pair or as a single line feed character."
+      locality:
+        type: string
+        description: "City or locality component."
+      region:
+        type: string
+        description: "State, province, prefecture, or region component."
+      postal_code:
+        type: string
+        description: "Zip code or postal code component."
+      country:
+        type: string
+        description: "Country name component."
+
+  Client:
+    type: object
+    description: |
+      OAuth2 client metadata. Registered clients have a set of metadata values associated with
+      their client identifier at an authorization server, such as the list
+      of valid redirection URIs or a display name.
+    externalDocs:
+      description: "2. Client Metadata"
+      url: "https://tools.ietf.org/html/rfc7591#section-2"
+    properties:
+      client_id:
+        type: string
+        description: |
+          OAuth 2.0 client identifier string.  It SHOULD NOT be
+          currently valid for any other registered client, though an
+          authorization server MAY issue the same client identifier to
+          multiple instances of a registered client at its discretion.
+
+      client_secret:
+        type: string
+        description: |
+          OAuth 2.0 client secret string.  If issued, this MUST
+          be unique for each "client_id" and SHOULD be unique for multiple
+          instances of a client using the same "client_id".  This value is
+          used by confidential clients to authenticate to the token
+          endpoint, as described in OAuth 2.0 [RFC6749], Section 2.3.1.
+
+      redirect_uris:
+        type: string
+        description: |
+          Array of redirection URI strings for use in redirect-based flows
+          such as the authorization code and implicit flows.  As required by
+          Section 2 of OAuth 2.0 [RFC6749], clients using flows with
+          redirection MUST register their redirection URI values.
+          Authorization servers that support dynamic registration for
+          redirect-based flows MUST implement support for this metadata
+          value.
+
+      token_endpoint_auth_method:
+        type: string
+        description: |
+          String indicator of the requested authentication method for the
+          token endpoint.  Values defined by this specification are:
+
+          *  "none": The client is a public client as defined in OAuth 2.0,
+             Section 2.1, and does not have a client secret.
+
+          *  "client_secret_post": The client uses the HTTP POST parameters
+             as defined in OAuth 2.0, Section 2.3.1.
+
+          *  "client_secret_basic": The client uses HTTP Basic as defined in
+             OAuth 2.0, Section 2.3.1.
+
+          Additional values can be defined via the IANA "OAuth Token
+          Endpoint Authentication Methods" registry established in
+          Section 4.2.  Absolute URIs can also be used as values for this
+          parameter without being registered.  If unspecified or omitted,
+          the default is "client_secret_basic", denoting the HTTP Basic
+          authentication scheme as specified in Section 2.3.1 of OAuth 2.0.
+
+      grant_types:
+        type: string
+        description: |
+          Array of OAuth 2.0 grant type strings that the client can use at
+          the token endpoint.  These grant types are defined as follows:
+
+          *  "authorization_code": The authorization code grant type defined
+             in OAuth 2.0, Section 4.1.
+
+          *  "implicit": The implicit grant type defined in OAuth 2.0,
+             Section 4.2.
+
+          *  "password": The resource owner password credentials grant type
+             defined in OAuth 2.0, Section 4.3.
+
+          *  "client_credentials": The client credentials grant type defined
+             in OAuth 2.0, Section 4.4.
+
+          *  "refresh_token": The refresh token grant type defined in OAuth
+             2.0, Section 6.
+
+          *  "urn:ietf:params:oauth:grant-type:jwt-bearer": The JWT Bearer
+             Token Grant Type defined in OAuth JWT Bearer Token Profiles
+             [RFC7523].
+
+          *  "urn:ietf:params:oauth:grant-type:saml2-bearer": The SAML 2.0
+             Bearer Assertion Grant defined in OAuth SAML 2 Bearer Token
+             Profiles [RFC7522].
+
+          If the token endpoint is used in the grant type, the value of this
+          parameter MUST be the same as the value of the "grant_type"
+          parameter passed to the token endpoint defined in the grant type
+          definition.  Authorization servers MAY allow for other values as
+          defined in the grant type extension process described in OAuth
+          2.0, Section 4.5.  If omitted, the default behavior is that the
+          client will use only the "authorization_code" Grant Type.
+
+      response_types:
+        type: string
+        description: |
+          Array of the OAuth 2.0 response type strings that the client can
+          use at the authorization endpoint.  These response types are
+          defined as follows:
+
+          *  "code": The authorization code response type defined in OAuth
+             2.0, Section 4.1.
+
+          *  "token": The implicit response type defined in OAuth 2.0,
+             Section 4.2.
+
+          If the authorization endpoint is used by the grant type, the value
+          of this parameter MUST be the same as the value of the
+          "response_type" parameter passed to the authorization endpoint
+          defined in the grant type definition.  Authorization servers MAY
+          allow for other values as defined in the grant type extension
+          process is described in OAuth 2.0, Section 4.5.  If omitted, the
+          default is that the client will use only the "code" response type.
+
+      client_name:
+        type: string
+        description: |
+          Human-readable string name of the client to be presented to the
+          end-user during authorization.  If omitted, the authorization
+          server MAY display the raw "client_id" value to the end-user
+          instead.  It is RECOMMENDED that clients always send this field.
+          The value of this field MAY be internationalized, as described in
+          Section 2.2.
+
+      client_uri:
+        type: string
+        description: |
+          URL string of a web page providing information about the client.
+          If present, the server SHOULD display this URL to the end-user in
+          a clickable fashion.  It is RECOMMENDED that clients always send
+          this field.  The value of this field MUST point to a valid web
+          page.  The value of this field MAY be internationalized, as
+          described in Section 2.2.
+
+      logo_uri:
+        type: string
+        description: |
+          URL string that references a logo for the client.  If present, the
+          server SHOULD display this image to the end-user during approval.
+          The value of this field MUST point to a valid image file.  The
+          value of this field MAY be internationalized, as described in
+          Section 2.2.
+
+      scope:
+        type: string
+        description: |
+          String containing a space-separated list of scope values (as
+          described in Section 3.3 of OAuth 2.0 [RFC6749]) that the client
+          can use when requesting access tokens.  The semantics of values in
+          this list are service specific.  If omitted, an authorization
+          server MAY register a client with a default set of scopes.
+
+      contacts:
+        type: string
+        description: |
+          Array of strings representing ways to contact people responsible
+          for this client, typically email addresses.  The authorization
+          server MAY make these contact addresses available to end-users for
+          support requests for the client.  See Section 6 for information on
+          Privacy Considerations.
+
+      tos_uri:
+        type: string
+        description: |
+          URL string that points to a human-readable terms of service
+          document for the client that describes a contractual relationship
+          between the end-user and the client that the end-user accepts when
+          authorizing the client.  The authorization server SHOULD display
+          this URL to the end-user if it is provided.  The value of this
+          field MUST point to a valid web page.  The value of this field MAY
+          be internationalized, as described in Section 2.2.
+
+      policy_uri:
+        type: string
+        description: |
+          URL string that points to a human-readable privacy policy document
+          that describes how the deployment organization collects, uses,
+          retains, and discloses personal data.  The authorization server
+          SHOULD display this URL to the end-user if it is provided.  The
+          value of this field MUST point to a valid web page.  The value of
+          this field MAY be internationalized, as described in Section 2.2.
+
+      jwks_uri:
+        type: string
+        description: |
+          URL string referencing the client's JSON Web Key (JWK) Set
+          [RFC7517] document, which contains the client's public keys.  The
+          value of this field MUST point to a valid JWK Set document.  These
+          keys can be used by higher-level protocols that use signing or
+          encryption.  For instance, these keys might be used by some
+          applications for validating signed requests made to the token
+          endpoint when using JWTs for client authentication [RFC7523].  Use
+          of this parameter is preferred over the "jwks" parameter, as it
+          allows for easier key rotation.  The "jwks_uri" and "jwks"
+          parameters MUST NOT both be present in the same request or
+          response.
+
+      jwks:
+        type: string
+        description: |
+          Client's JSON Web Key Set [RFC7517] document value, which contains
+          the client's public keys.  The value of this field MUST be a JSON
+          object containing a valid JWK Set.  These keys can be used by
+          higher-level protocols that use signing or encryption.  This
+          parameter is intended to be used by clients that cannot use the
+          "jwks_uri" parameter, such as native clients that cannot host
+          public URLs.  The "jwks_uri" and "jwks" parameters MUST NOT both
+          be present in the same request or response.
+
+      software_id:
+        type: string
+        description: |
+          A unique identifier string (e.g., a Universally Unique Identifier
+          (UUID)) assigned by the client developer or software publisher
+          used by registration endpoints to identify the client software to
+          be dynamically registered.  Unlike "client_id", which is issued by
+          the authorization server and SHOULD vary between instances, the
+          "software_id" SHOULD remain the same for all instances of the
+          client software.  The "software_id" SHOULD remain the same across
+          multiple updates or versions of the same piece of software.  The
+          value of this field is not intended to be human readable and is
+          usually opaque to the client and authorization server.
+
+      software_version:
+        type: string
+        description: |
+          A version identifier string for the client software identified by
+          "software_id".  The value of the "software_version" SHOULD change
+          on any update to the client software identified by the same
+          "software_id".  The value of this field is intended to be compared
+          using string equality matching and no other comparison semantics
+          are defined by this specification.  The value of this field is
+          outside the scope of this specification, but it is not intended to
+          be human readable and is usually opaque to the client and
+          authorization server.  The definition of what constitutes an
+          update to client software that would trigger a change to this
+          value is specific to the software itself and is outside the scope
+          of this specification.
+
+  UserToken:
+    type: object
+    description: User tokens
+    properties:
+      access_token:
+        type: string
+        description: |
+          OAuth2 Access Token
+
+          Access tokens are credentials used to access protected resources.  An
+          access token is a string representing an authorization issued to the
+          client.  The string is usually opaque to the client.  Tokens
+          represent specific scopes and durations of access, granted by the
+          resource owner, and enforced by the resource server and authorization
+          server.
+
+      refresh_token:
+        type: string
+        description: |
+          OAuth2 Refresh Token
+
+          Refresh tokens are credentials used to obtain access tokens.  Refresh
+          tokens are issued to the client by the authorization server and are
+          used to obtain a new access token when the current access token
+          becomes invalid or expires, or to obtain additional access tokens
+          with identical or narrower scope (access tokens may have a shorter
+          lifetime and fewer permissions than authorized by the resource
+          owner).  Issuing a refresh token is optional at the discretion of the
+          authorization server.
+
+      authorization_code:
+        type: string
+        description: |
+          OAuth2 Authorization Code
+
+          The authorization code is obtained by using an authorization server
+          as an intermediary between the client and resource owner.  Instead of
+          requesting authorization directly from the resource owner, the client
+          directs the resource owner to an authorization server (via its
+          user-agent as defined in [RFC2616]), which in turn directs the
+          resource owner back to the client with the authorization code.
+
+      id_token:
+        type: string
+        description: |
+          OpenID Connect ID Token
+
+          The primary extension that OpenID Connect makes to OAuth 2.0 to enable End-Users to be Authenticated is the ID Token data structure.
+          The ID Token is a security token that contains Claims about the Authentication of an End-User by an Authorization Server
+          when using a Client, and potentially other requested Claims. The ID Token is represented as a JSON Web Token.
+
+  ClientToken:
+    type: object
+    description: |
+      Client tokens.
+    properties:
+      registration_access_token:
+        type: string
+        description: |
+          String containing the access token to be used at the
+          client configuration endpoint to perform subsequent operations
+          upon the client registration.
